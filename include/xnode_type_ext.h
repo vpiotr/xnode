@@ -3,12 +3,14 @@
 // Purpose:     utility base classes & definitions required for type extensions
 // Author:      Piotr Likus
 // Created:     01/09/2015
-// Last change: 
+// Last change: 12/09/2015
 // License:     BSD
 //----------------------------------------------------------------------------------
 
 #ifndef __XNODE_TYPEE_EXT_H__
 #define __XNODE_TYPEE_EXT_H__
+#include <string>
+#include "xnode_utils.h"
 
 /// \file xnode_type_ext.h
 /// utility base classes & definitions required for type extensions
@@ -35,7 +37,7 @@ struct xnode_cast_policy_silent_cast<false> {
 
 template<typename T>
 struct xnode_cast_policy_type_codes {
-    enum { 
+    enum {
         null_code = xnode_cast_policy_silent_cast<false>::null_code,
         def_code = 0,
         max_code = 0
@@ -51,7 +53,7 @@ class xnode_caster_base {
 protected:
 	template<typename DestType>
 	static void throwWrongCast(int typeCode) {
-		throw std::runtime_error(std::string("Conversion failed, source type: ") + std::to_string(typeCode) + ", target: " + typeid(DestType).name());
+		throw std::runtime_error(std::string("Conversion failed, source type: ") + to_string(typeCode) + ", target: " + typeid(DestType).name());
 	}
 };
 

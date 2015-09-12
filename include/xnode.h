@@ -3,7 +3,7 @@
 // Purpose:     Union-like dynamic data type able to store any scalar or structure.
 // Author:      Piotr Likus
 // Created:     01/09/2015
-// Last change: 
+// Last change: 12/09/2015
 // License:     BSD
 //----------------------------------------------------------------------------------
 
@@ -27,18 +27,18 @@
 /// - dynamic value, allocated by new, with automatic destruction: scalar, struct or class object
 //
 /// Classic, C-like build-in arrays are not supported.
-// 
+//
 /// Benefits
 /// - any-type variable (dynamic typing)
 /// - automatic conversion supported between bool, char, string, floating point & integer values
 /// - custom conversion methods can be implemented (defined as politics)
 /// - no dynamic allocation for scalar values
 /// - move semantics implemented
-// 
+//
 /// Use cases
 /// - optional named parameters
 /// - dynamic structures with optional parts
-/// - suitable for storing values for JSON/XML (with help of included containers) 
+/// - suitable for storing values for JSON/XML (with help of included containers)
 /// - see unit tests for detailed use cases.
 
 #include "xnode_type_ext.h"
@@ -64,7 +64,7 @@ template<typename T>
 struct xnode_type_meta {
 	static const bool store_as_null = xnode_is_null<T>::value;
 	static const bool store_as_pointer = (!store_as_null) && xn_is_pointer<T>::value;
-	static const bool store_as_casted = (!store_as_null) && (!store_as_pointer) && (sizeof(void *) >= sizeof(T)) && (is_scalar<T>::value);
+	static const bool store_as_casted = (!store_as_null) && (!store_as_pointer) && (sizeof(void *) >= sizeof(T)) && (std::is_scalar<T>::value);
 	static const bool store_as_owned = !store_as_casted && !xnode_is_null<T>::value;
 };
 
@@ -520,20 +520,21 @@ std::string xnode_pack_value(const char *text) {
 }
 
 
-/// Main class for xnode library, 
+/// Main class for xnode library,
 /// based on generic_t from Advanced C++ Metaprogramming by Davide Di Gennaro.
 /// ValuePolicy used for selection of value casting classes.
 template<class ValuePolicy = xnode_def_value_policy>
 class basic_xnode {
 public:
 	typedef basic_xnode<ValuePolicy> this_type;
+	typedef ValuePolicy value_policy;
 
 	basic_xnode() :
 		vtable_(xnode_get_vtable<xnode_null_value>()), value_(nullptr)
 	{
 	}
 
-	basic_xnode(const basic_xnode& src)		
+	basic_xnode(const basic_xnode& src)
 	{
 		vtable_ = src.vtable_;
 		vtable_->init_from_node_(&value_, src.value_);
@@ -541,7 +542,7 @@ public:
 
 	basic_xnode(basic_xnode &&src) :
 		vtable_(xnode_get_vtable<xnode_null_value>()), value_(nullptr)
-	{		
+	{
 		std::swap(vtable_, src.vtable_);
 		std::swap(value_, src.value_);
 	}
@@ -601,7 +602,7 @@ public:
 		return vtable_->less_(value_, rhs.value_);
 	}
 
-/* Not recommended to use / define (because of casting): 
+/* Not recommended to use / define (because of casting):
 	bool operator<=(const basic_xnode& rhs) const {
 		return (*this == rhs) || (*this < rhs);
 	}
@@ -620,7 +621,7 @@ public:
 		return vtable_->type_code_;
 	}
 
-    /// returns type of value stored in node, compatible with built-in typeid() 
+    /// returns type of value stored in node, compatible with built-in typeid()
 	const std::type_info& type() const {
 		return vtable_->value_type_id_;
 	}
@@ -655,7 +656,7 @@ public:
 			vtable_->copy_(value_, static_cast<const void *>(&value));
 		}
 		else {
-            if (!xnode_caster<T, ValuePolicy::cast_policy>::cast_from_value(&value_, vtable_->type_code_, value))
+            if (!xnode_caster<T, typename value_policy::cast_policy>::cast_from_value(&value_, vtable_->type_code_, value))
                 throwWrongCastFromValue<T>();
 		}
 	}
@@ -669,7 +670,7 @@ public:
 			return result;
 		}
 
-        if (!xnode_caster<T, ValuePolicy::cast_policy>::cast_to_value(result, const_cast<void **>(&value_), vtable_->type_code_))
+        if (!xnode_caster<T, typename value_policy::cast_policy>::cast_to_value(result, const_cast<void **>(&value_), vtable_->type_code_))
             throwWrongCastToValue<T>();
 		return result;
 	}
@@ -682,9 +683,9 @@ public:
 			return output;
 		}
 
-		if (!xnode_caster<T, ValuePolicy::cast_policy>::cast_to_value(output, &value_, vtable_->type_code_))
+		if (!xnode_caster<T, typename value_policy::cast_policy>::cast_to_value(output, &value_, vtable_->type_code_))
             throwWrongCastToValue<T>();
-        
+
         return output;
 	}
 
@@ -699,7 +700,7 @@ public:
 			return result;
 		}
 
-        if (xnode_caster<T, ValuePolicy::cast_policy>::cast_to_value(result, const_cast<void **>(&value_), vtable_->type_code_))
+        if (xnode_caster<T, typename value_policy::cast_policy>::cast_to_value(result, const_cast<void **>(&value_), vtable_->type_code_))
             return result;
 
 		return def_value;
@@ -715,9 +716,9 @@ public:
 			return output;
 		}
 
-        if (xnode_caster<T, ValuePolicy::cast_policy>::cast_to_value(output, &value_, vtable_->type_code_))
+        if (xnode_caster<T, typename value_policy::cast_policy>::cast_to_value(output, &value_, vtable_->type_code_))
             return output;
-        
+
         return def_value;
 	}
 
@@ -728,7 +729,7 @@ public:
             return true;
         } else {
             T tmp;
-            return xnode_caster<T, ValuePolicy::cast_policy>::cast_to_value(tmp, &value_, vtable_->type_code_);
+            return xnode_caster<T, typename value_policy::cast_policy>::cast_to_value(tmp, &value_, vtable_->type_code_);
         }
     }
 
@@ -804,12 +805,12 @@ public:
             return def_value;
 	}
 
-	/// release ownership of object and return pointer to it, 
+	/// release ownership of object and return pointer to it,
 	/// \result returns null for non-owned values or if type is incorrect
 	template<typename T>
 	T *release() {
 		std::auto_ptr<T> result;
-		
+
 		if (vtable_->deleter_ != nullptr) {
 			result.reset(get_ptr<T>());
 		}
@@ -838,7 +839,7 @@ public:
 		return typeid(T) == type();
 	}
 
-    /// object builder function with optional type casting 
+    /// object builder function with optional type casting
     /// \param[in] DestType final value type
     /// \param[in] ValueType input value type
     /// \param[in] value input value to be converted to xnode
@@ -854,7 +855,7 @@ public:
 		return result;
 	}
 
-    /// object builder function 
+    /// object builder function
     /// \param[in] ValueType input value type
     /// \param[in] value input value to be converted to xnode
     /// \result Returns xnode of type ValueType
@@ -892,22 +893,22 @@ protected:
 	}
 
     void throwRefReadFail() const {
-        throw std::runtime_error(std::string("Reference read failed, data type: ") + std::to_string(vtable_->type_code_) + ", name: " + vtable_->value_type_id_.name());
+        throw std::runtime_error(std::string("Reference read failed, data type: ") + to_string(vtable_->type_code_) + ", name: " + vtable_->value_type_id_.name());
     }
 
-    template<typename T> 
+    template<typename T>
     void throwWrongCastToValue() const {
-        throw std::runtime_error(std::string("Conversion to value failed, storage type: [ code: ") + std::to_string(vtable_->type_code_) + ", name: " + vtable_->value_type_id_.name() + " ], value type name: " + typeid(T).name());
+        throw std::runtime_error(std::string("Conversion to value failed, storage type: [ code: ") + to_string(vtable_->type_code_) + ", name: " + vtable_->value_type_id_.name() + " ], value type name: " + typeid(T).name());
     }
 
-    template<typename T> 
+    template<typename T>
     void throwWrongCastFromValue() const {
-        throw std::runtime_error(std::string("Conversion from value failed, storage type: [ code: ") + std::to_string(vtable_->type_code_) + ", name: " + vtable_->value_type_id_.name() + " ], value type name: " + typeid(T).name());
+        throw std::runtime_error(std::string("Conversion from value failed, storage type: [ code: ") + to_string(vtable_->type_code_) + ", name: " + vtable_->value_type_id_.name() + " ], value type name: " + typeid(T).name());
     }
 
 private:
-	void *value_;
 	const xnode_vtable *vtable_;
+	void *value_;
 };
 
 typedef basic_xnode<> xnode;

@@ -118,7 +118,9 @@ Conversion between types can be user-defined (see xnode_long_double.h & TestLong
 Supported environments
 ======================
 * compiler: any compiler with C++11 support 
-* tested with VS 2015 C++ compiler 
+* tested with:
+  * VS 2015 C++ compiler 
+  * GCC 4.8.1 (under MinGW)
 
 External dependencies
 =====================

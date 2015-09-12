@@ -3,7 +3,7 @@
 // Purpose:     Unit testing utility functions
 // Author:      Piotr Likus
 // Created:     01/09/2015
-// Last change: 
+// Last change: 12/09/2015
 // License:     BSD
 //----------------------------------------------------------------------------------
 
@@ -60,9 +60,9 @@ inline void AssertThrows(Func assertion, const char *message = NULL)
 
 	if (!throwFound) {
 		if (message != NULL)
-			throw runtime_error(std::string("assertion.throws = [") + std::string(message) + "]");
+			throw std::runtime_error(std::string("assertion.throws = [") + std::string(message) + "]");
 		else
-			throw runtime_error("assertion.throws failed");
+			throw std::runtime_error("assertion.throws failed");
 	}
 }
 
@@ -79,9 +79,9 @@ inline void AssertNoThrow(Func assertion, const char *message = NULL)
 
 	if (throwFound) {
 		if (message != NULL)
-			throw runtime_error(std::string("assertion.throws = [") + std::string(message) + "]");
+			throw std::runtime_error(std::string("assertion.throws = [") + std::string(message) + "]");
 		else
-			throw runtime_error("assertion.throws failed");
+			throw std::runtime_error("assertion.throws failed");
 	}
 }
 
@@ -98,9 +98,9 @@ void AssertThrowsMethod(ObjectType obj, Func func, const char *message = NULL)
 
 	if (!throwFound) {
 		if (message != NULL)
-			throw runtime_error(std::string("assertion.throws = [") + std::string(message) + "]");
+			throw std::runtime_error(std::string("assertion.throws = [") + std::string(message) + "]");
 		else
-			throw runtime_error("assertion.throws failed");
+			throw std::runtime_error("assertion.throws failed");
 	}
 }
 
@@ -109,10 +109,10 @@ void testFunc(const char *name, Func f, bool &failed)
 {
 	try {
 		f();
-		cout << "OK: Test [" << std::string(name) << "] " << "succeeded\n";
+		std::cout << "OK: Test [" << std::string(name) << "] " << "succeeded\n";
 	}
-	catch (exception &e) {
-		cout << "Error: Test [" << std::string(name) << "] failed!, error: " << e.what() << "\n";
+	catch (std::exception &e) {
+		std::cout << "Error: Test [" << std::string(name) << "] failed!, error: " << e.what() << "\n";
 		failed = true;
 	}
 }

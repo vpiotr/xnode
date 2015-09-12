@@ -3,7 +3,7 @@
 // Purpose:     Unit tests for xnode library
 // Author:      Piotr Likus
 // Created:     01/09/2015
-// Last change: 
+// Last change: 12/09/2015
 // License:     BSD
 //----------------------------------------------------------------------------------
 
@@ -11,7 +11,7 @@
 #include <iostream>
 
 // for std::accumulate
-#include <numeric>      
+#include <numeric>
 
 // for std::sort
 #include <algorithm>
@@ -182,7 +182,7 @@ void TestCharLiteral() {
 
 void TestAnyScalar() {
 	// assuming there is no matching caster & xnode_type_code for this type
-	typedef signed char schar; 
+	typedef signed char schar;
 
 	xnode svalue;
 
@@ -191,8 +191,9 @@ void TestAnyScalar() {
 	b = 3;
 
 	svalue.set_as(a);
+    Assert(svalue.get_type_code() == xnode_cast_policy_type_codes<xnode_def_value_policy>::def_code, "type code = default");
 	b = svalue.get_as<schar>();
-	Assert(a == b);
+	Assert(a == b, "read value same as written");
 }
 
 void TestAnyStruct() {
@@ -324,11 +325,11 @@ void TestLess() {
 }
 
 template<typename T>
-xnode mysum(xnode x, xnode y) { 
-	xnode result; 
+xnode mysum(xnode x, xnode y) {
+	xnode result;
 	T value = x.get_as<T>() + y.get_as<T>();
-	result.set_as(value); 
-	return result;  
+	result.set_as(value);
+	return result;
 }
 
 void TestVectorSum() {
@@ -447,7 +448,7 @@ void TestTreeOfNodes() {
 
 	v.push_back(xnode::value_of(3));
 	v.push_back(xnode::value_of(5));
-	
+
 	xnode_named_list pl;
 	pl.put("z", xnode::value_of(12));
 	pl.put("a", xnode::value_of(1L));
@@ -513,7 +514,7 @@ std::string printInFont(const xnode &font, const std::string &text) {
     out << ", bold:" << list.get_def("bold", xnode::value_of(false)).get_as<bool>();
     out << "] = " << text;
 
-	return(out.str());  
+	return(out.str());
 }
 
 void TestOptionalNamedParams() {
@@ -544,17 +545,18 @@ void TestDefNamedParams() {
 void TestDynamicCastVptr() {
 
     class BaseNode {
-    public: 
+    public:
+        virtual ~BaseNode() {}
         virtual int getValue() { return 13; }
     };
 
     class MyNode : public BaseNode {
-    public: 
+    public:
         virtual int getValue() { return 10; }
     };
 
     class OtherNode : public BaseNode {
-    public: 
+    public:
         virtual int getValue() { return 111; }
     };
 
@@ -599,13 +601,13 @@ struct callGetRefNull {
 
 void TestRefThrows() {
     xnode value;
-    AssertThrows(callGetRefNull(value), "check 1");    
+    AssertThrows(callGetRefNull(value), "check 1");
     value = xnode::value_of(10);
     Assert(value.get_as<int>() == 10, "check 2");
 }
 
 void TestIsConvertable() {
-    xnode value = xnode::value_of(3.14f); 
+    xnode value = xnode::value_of(3.14f);
     AssertTrue(value.is<float>());
     AssertTrue(value.is_convertable_to<double>(), "is_convertable to double");
     AssertFalse(value.is_convertable_to<void *>(), "is_convertable to void *");
@@ -641,19 +643,19 @@ struct readByDoubleDef {
 void TestWrongParseThrows() {
     xnode value = xnode::value_of("@!@%!");
     AssertFalse(value.is_convertable_to<double>());
-    AssertThrows(readByDouble(value), "check 1");    
+    AssertThrows(readByDouble(value), "check 1");
 }
 
 void TestCorrectParse() {
     xnode value = xnode::value_of("1234");
     AssertTrue(value.is_convertable_to<double>());
-    AssertNoThrow(readByDouble(value), "check 1");    
+    AssertNoThrow(readByDouble(value), "check 1");
 }
 
 void TestSafeParse() {
     xnode value = xnode::value_of("@&^&!@");
     AssertFalse(value.is_convertable_to<double>());
-    AssertNoThrow(readByDoubleDef(value, 2.71), "check 1");    
+    AssertNoThrow(readByDoubleDef(value, 2.71), "check 1");
 }
 
 void TestLongDoubleNotConvertable() {
@@ -673,7 +675,7 @@ void TestLongDoubleCastWithPolicy() {
 
 void TestWrongCastThrows() {
     void *vptr = NULL;
-    xnode value = xnode::value_of(vptr); 
+    xnode value = xnode::value_of(vptr);
 
     AssertFalse(value.is_null(), "is_null");
     AssertTrue(value.is<void *>(), "is void*");
@@ -683,7 +685,7 @@ void TestWrongCastThrows() {
 
 void TestSafeCastNoThrow() {
     void *vptr = NULL;
-    xnode value = xnode::value_of(vptr); 
+    xnode value = xnode::value_of(vptr);
 
     AssertFalse(value.is_null(), "is_null");
     AssertTrue(value.is<void *>(), "is void*");

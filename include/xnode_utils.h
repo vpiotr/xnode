@@ -3,7 +3,7 @@
 // Purpose:     utility classes not related directly to xnode class.
 // Author:      Piotr Likus
 // Created:     01/09/2015
-// Last change: 
+// Last change: 12/09/2015
 // License:     BSD
 //----------------------------------------------------------------------------------
 
@@ -91,17 +91,27 @@ namespace XN_CHECK_LESS
 	template<typename T> no& operator < (const T&, const T&);
 
 	template <typename T>
-	struct opLessExists 
+	struct opLessExists
 	{
 		enum { value = (sizeof(*(T*)(0) < *(T*)(0)) != sizeof(no)) };
 	};
 }
 
+template<typename T>
+struct has_equals_operator {
+    static const bool value = (XN_CHECK_EQUALS::opEqualExists<T>::value != 0);
+};
+
+template<typename T>
+struct has_less_operator {
+    static const bool value = (XN_CHECK_LESS::opLessExists<T>::value != 0);
+};
+
 // checks if objects are equal, throws if operator == not implemented
 template<class T>
 typename xnEnableIf<
 	xnSelector<
-	XN_CHECK_EQUALS::opEqualExists<typename T>::value>, bool>::type
+	has_equals_operator<T>::value>, bool>::type
 	xn_equals(const T& lhs, const T& rhs)
 {
 	return lhs == rhs;
@@ -111,7 +121,7 @@ typename xnEnableIf<
 template<class T>
 typename xnEnableIf<
 	xnSelector<
-	!XN_CHECK_EQUALS::opEqualExists<typename T>::value>, bool>::type
+	!has_equals_operator<T>::value>, bool>::type
 	xn_equals(const T& lhs, const T& rhs)
 {
 	throw std::runtime_error(std::string("Equals not implemented, type: ") + typeid(T).name());
@@ -121,7 +131,7 @@ typename xnEnableIf<
 template<class T>
 typename xnEnableIf<
 	xnSelector<
-	XN_CHECK_LESS::opLessExists<typename T>::value>, bool>::type
+	has_less_operator<T>::value>, bool>::type
 	xn_less(const T& lhs, const T& rhs)
 {
 	return lhs < rhs;
@@ -131,20 +141,10 @@ typename xnEnableIf<
 template<class T>
 typename xnEnableIf<
 	xnSelector<
-	!XN_CHECK_LESS::opLessExists<typename T>::value>, bool>::type
+	!has_less_operator<T>::value>, bool>::type
 	xn_less(const T& lhs, const T& rhs)
 {
 	throw std::runtime_error(std::string("Less operator not implemented, type: ") + typeid(T).name());
 }
-
-template<class T>
-struct xn_is_char_literal {
-    enum { value = 0 };
-};
-
-template<>
-struct xn_is_char_literal<const char *>{
-    enum { value = 1 };
-};
 
 #endif

@@ -1,9 +1,9 @@
 //----------------------------------------------------------------------------------
 // Name:        property_list.h
-// Purpose:     Key-value storage class with support for access order of insertion. 
+// Purpose:     Key-value storage class with support for access order of insertion.
 // Author:      Piotr Likus
 // Created:     01/09/2015
-// Last change: 
+// Last change: 12/09/2015
 // License:     BSD
 //----------------------------------------------------------------------------------
 
@@ -14,7 +14,7 @@
 #include <vector>
 #include <set>
 
-/// key-value pair container where key is unique 
+/// key-value pair container where key is unique
 /// container supports reading in insert order
 /// reading & deleting by key has O(1) complexity
 /// value is stored in just one place
@@ -29,7 +29,7 @@ public:
 	property_list() : dirty_keys_(false) {}
 
     property_list(const property_list &src):
-        dirty_keys_(src.dirty_keys_), 
+        dirty_keys_(src.dirty_keys_),
         keys_(src.keys_),
         values_(src.values_)
     {
@@ -44,7 +44,7 @@ public:
 
     }
 
-    property_list& operator=(const property_list &rhs) 
+    property_list& operator=(const property_list &rhs)
     {
         dirty_keys_ = rhs.dirty_keys_;
         keys_ = rhs.keys_;
@@ -79,9 +79,9 @@ public:
     }
 
     /// inserts value in storage, if key already exists, old value will be replaced
-    /// returns true if item was already there 
+    /// returns true if item was already there
 	bool put(const KeyType &key, const ValueType &value) {
-		value_container_type::iterator found = values_.find(key);
+		typename value_container_type::iterator found = values_.find(key);
         bool notFound = (found == values_.end());
         if (notFound) {
 			keys_.push_back(key);
@@ -91,9 +91,9 @@ public:
 	}
 
     /// inserts value in storage, if key already exists, old value will be replaced
-    /// returns true if item was already there 
+    /// returns true if item was already there
 	bool put(const KeyType &key, ValueType &&value) {
-		value_container_type::iterator found = values_.find(key);
+		typename value_container_type::iterator found = values_.find(key);
         bool notFound = (found == values_.end());
         if (notFound) {
 			keys_.push_back(key);
@@ -108,7 +108,7 @@ public:
     /// returns value selected by key
     /// throws error if key not found
 	ValueType &get(const KeyType &key) {
-		value_container_type::iterator found = values_.find(key);
+		typename value_container_type::iterator found = values_.find(key);
 		if (found == values_.end()) {
 			throwNotFound(key);
 		}
@@ -118,7 +118,7 @@ public:
     /// returns value selected by key
     /// throws error if key not found
 	const ValueType &get(const KeyType &key) const {
-		value_container_type::const_iterator found = values_.find(key);
+		typename value_container_type::const_iterator found = values_.find(key);
 		if (found == values_.end()) {
 			throwNotFound(key);
 		}
@@ -128,7 +128,7 @@ public:
     /// returns value selected by key
     /// returns provided default value if key not found
 	const ValueType get_def(const KeyType &key, const ValueType &defValue) const {
-		value_container_type::const_iterator found = values_.find(key);
+		typename value_container_type::const_iterator found = values_.find(key);
 		if (found == values_.end()) {
             return defValue;
 		}
@@ -138,7 +138,7 @@ public:
     /// returns value selected by key
     /// throws error if key not found
 	ValueType &get(const KeyType &key, ValueType &output) const {
-		value_container_type::iterator found = values_.find(key);
+		typename value_container_type::iterator found = values_.find(key);
 		if (found == values_.end()) {
 			throwNotFound(key);
 		}
@@ -149,7 +149,7 @@ public:
     /// returns pointer to value selected by key
     /// returns null if value not found
 	ValueType *get_ptr(const KeyType &key) {
-		value_container_type::iterator found = values_.find(key);
+		typename value_container_type::iterator found = values_.find(key);
 		if (found != values_.end()) {
 			return &(found->second);
 		}
@@ -160,7 +160,7 @@ public:
 
     /// removes value selected by key
 	void remove(const KeyType &key) {
-		value_container_type::iterator found = values_.find(key);
+		typename value_container_type::iterator found = values_.find(key);
 		if (found != values_.end()) {
 			values_.erase(found);
 			dirty_keys_ = true;
@@ -197,7 +197,7 @@ public:
 
     /// returns true if container holds value for a given key
 	bool contains(const KeyType &key) const {
-		value_container_type::const_iterator found = values_.find(key);
+		typename value_container_type::const_iterator found = values_.find(key);
 		return found != values_.end();
 	}
 
@@ -240,12 +240,12 @@ protected:
 	}
 
 	void throwNotFound(const KeyType &key) const {
-		throw runtime_error("key not found: " + to_string(key));
+		throw std::runtime_error("key not found: " + to_string(key));
 	}
 private:
-	value_container_type values_;
-	key_container_type keys_;
 	bool dirty_keys_;
+	key_container_type keys_;
+	value_container_type values_;
 };
 
 #endif
