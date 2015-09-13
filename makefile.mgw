@@ -1,0 +1,28 @@
+# makefile for Windows & MinGW
+
+CFLAGS = -Wall -O0 -std=c++11 -g -Wl,--subsystem,console
+CC = mingw32-g++.exe
+
+INCLUDE_PATHS = -I.\include
+#LINKER_FLAGS = -lmingw32 
+LINKER_FLAGS =
+
+TARGET_NAME =xnode_test
+OBJ_LIST = xnode_test.o
+
+all: clean $(TARGET_NAME).exe clean_build
+
+xnode_test.exe: $(OBJ_LIST)
+	 $(CC) $(LINKER_FLAGS) -o $(TARGET_NAME).exe $(OBJ_LIST)
+
+xnode_test.o: test\xnode_test.cpp
+	 $(CC) $(CFLAGS) -c test\xnode_test.cpp $(INCLUDE_PATHS) 
+     
+clean:
+	 del *.o 
+
+clean_build:
+	 del *.o
+	 copy $(TARGET_NAME).exe bin\$(TARGET_NAME).exe
+	 del $(TARGET_NAME).exe
+	 
