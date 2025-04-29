@@ -49,7 +49,13 @@ public:
     }
 
     static bool cast_from_value(void **storage, int destTypeCode, const ValueType &value) {
-        // Use default policy for all cases
+        // Special handling for long double
+        if (destTypeCode == xnode_type_code<long double>::value) {
+            *reinterpret_cast<long double*>(*storage) = static_cast<long double>(value);
+            return true;
+        }
+
+        // For all other types, use default policy
         return xnode_caster<double, xnode_def_cast_policy>::cast_from_value(storage, destTypeCode, value);
     }
 };
