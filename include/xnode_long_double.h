@@ -42,9 +42,17 @@ public:
         // Special handling for long double
         if (srcTypeCode == xnode_type_code<long double>::value) {
             std::cout << "DEBUG: xnode_caster<double>::cast_to_value, step 2a" << std::endl;
-            long double value = *reinterpret_cast<long double*>(*storage);
+            long double value;
+
+            if (xnode_storage_meta<long double>::storage_type == xstOwned) {
+                std::cout << "DEBUG: xnode_caster<double>::cast_to_value, step 2a1" << std::endl;
+                value = *reinterpret_cast<long double*>(*storage);
+            } else {
+                value = xnode_get_scalar<long double>(storage);
+            }
+
             std::cout << "DEBUG: xnode_caster<double>::cast_to_value, step 2b" << std::endl;
-            output = static_cast<double>(value);
+            output = static_cast<ValueType>(value);
             std::cout << "DEBUG: xnode_caster<double>::cast_to_value, step 2c" << std::endl;
             return true;
         }
@@ -57,7 +65,11 @@ public:
     static bool cast_from_value(void **storage, int destTypeCode, const ValueType &value) {
         // Special handling for long double
         if (destTypeCode == xnode_type_code<long double>::value) {
-            *reinterpret_cast<long double*>(*storage) = static_cast<long double>(value);
+            if (xnode_storage_meta<long double>::storage_type == xstOwned) {
+              *reinterpret_cast<long double*>(*storage) = static_cast<long double>(value);
+            } else {
+              xnode_set_scalar<long double>(storage, static_cast<long double>(value));
+            }
             return true;
         }
 
