@@ -702,7 +702,7 @@ void TestLongDoubleCastWithPolicySet() {
     long double d = 12.14;
     xnode_ld value;
 	value.set_as(d);
-	std::cout << "DEBUG: TestLongDoubleCastWithPolicySet / storage type: " << typeid(xnode_storage_meta<long double>::storage_type).name() << std::endl;
+	std::cout << "DEBUG: TestLongDoubleCastWithPolicySet / storage type: " << xnode_storage_meta<long double>::storage_type << std::endl;
 	std::cout << "DEBUG: TestLongDoubleCastWithPolicySet step 1" << std::endl;
     Assert(value.is<long double>());
 	std::cout << "DEBUG: TestLongDoubleCastWithPolicySet step 2" << std::endl;
