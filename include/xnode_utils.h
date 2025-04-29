@@ -3,7 +3,6 @@
 // Purpose:     utility classes not related directly to xnode class.
 // Author:      Piotr Likus
 // Created:     01/09/2015
-// Last change: 12/09/2015
 // License:     BSD
 //----------------------------------------------------------------------------------
 

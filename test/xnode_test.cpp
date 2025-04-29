@@ -683,33 +683,22 @@ void TestLongDoubleWithPolicySet() {
 }
 
 void TestLongDoubleCastWithPolicyConstruct() {
-	std::cout << "DEBUG: TestLongDoubleCastWithPolicyConstruct step 0" << std::endl;
     typedef basic_xnode<xnode_ld_value_policy> xnode_ld;
     long double d = 12.14;
     xnode_ld value = xnode_ld::value_of(d);
-	std::cout << "DEBUG: TestLongDoubleCastWithPolicyConstruct step 1" << std::endl;
     Assert(value.is<long double>());
-	std::cout << "DEBUG: TestLongDoubleCastWithPolicyConstruct step 2" << std::endl;
     Assert(value.get_as<long double>() > 0.0);
-	std::cout << "DEBUG: TestLongDoubleCastWithPolicyConstruct step 3" << std::endl;
     Assert(value.get_as<double>() > 0.0);
-	std::cout << "DEBUG: TestLongDoubleCastWithPolicyConstruct step 4" << std::endl;
 }
 
 void TestLongDoubleCastWithPolicySet() {
-	std::cout << "DEBUG: TestLongDoubleCastWithPolicySet step 0" << std::endl;
     typedef basic_xnode<xnode_ld_value_policy> xnode_ld;
     long double d = 12.14;
     xnode_ld value;
 	value.set_as(d);
-	std::cout << "DEBUG: TestLongDoubleCastWithPolicySet / storage type: " << xnode_storage_meta<long double>::storage_type << std::endl;
-	std::cout << "DEBUG: TestLongDoubleCastWithPolicySet step 1" << std::endl;
     Assert(value.is<long double>());
-	std::cout << "DEBUG: TestLongDoubleCastWithPolicySet step 2" << std::endl;
     Assert(value.get_as<long double>() > 0.0);
-	std::cout << "DEBUG: TestLongDoubleCastWithPolicySet step 3" << std::endl;
     Assert(value.get_as<double>() > 0.0);
-	std::cout << "DEBUG: TestLongDoubleCastWithPolicySet step 4" << std::endl;
 }
 
 void TestWrongCastThrows() {

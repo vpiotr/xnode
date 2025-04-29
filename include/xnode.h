@@ -3,7 +3,6 @@
 // Purpose:     Union-like dynamic data type able to store any scalar or structure.
 // Author:      Piotr Likus
 // Created:     01/09/2015
-// Last change: 12/09/2015
 // License:     BSD
 //----------------------------------------------------------------------------------
 
