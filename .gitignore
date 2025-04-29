@@ -1,5 +1,43 @@
-backup/
-bin/
+# Build directories
 build/
+bin/
+lib/
+install/
+out/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+compile_commands.json
+CTestTestfile.cmake
+Testing/
+
+# IDE files
+.vs/
+.vscode/
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.vcxproj.filters
+.idea/
+*.swp
+*.swo
+
+# Object files
+*.o
+*.obj
+*.dll
+*.so
+*.dylib
+*.exe
+
+# Dependency directories
+CMakeUserPresets.json
+
+# Generated documentation
 help/
-doc/internal/
+doc/html/
+doc/latex/

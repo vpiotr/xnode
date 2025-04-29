@@ -913,6 +913,6 @@ private:
 
 typedef basic_xnode<> xnode;
 
-#include "details\xnode_builtins.h"
+#include "details/xnode_builtins.h"
 
 #endif
