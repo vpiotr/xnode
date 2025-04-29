@@ -107,6 +107,7 @@ void AssertThrowsMethod(ObjectType obj, Func func, const char *message = NULL)
 template<typename Func>
 void testFunc(const char *name, Func f, bool &failed)
 {
+    std::cout << "Starting test [" << std::string(name) << "] " << std::endl;
 	try {
 		f();
 		std::cout << "OK: Test [" << std::string(name) << "] " << "succeeded\n";

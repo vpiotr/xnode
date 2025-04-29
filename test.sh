@@ -4,5 +4,5 @@ cmake -B build
 # Build
 cmake --build build
 
-# Test
-cd build && ctest
+# Test with verbose output
+cd build && ctest -V
