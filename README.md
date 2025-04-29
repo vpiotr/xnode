@@ -1,32 +1,34 @@
-Introduction
+# Introduction
 ================
-This is readme file for xnode - variant-like data type container for dynamic-type variables in C++.
+xnode is a lightweight, header-only C++ library for dynamically typed values with automatic conversion between types.
 
-License
+[![CI Build Status](https://github.com/vpiotr/xnode/actions/workflows/ci.yml/badge.svg)](https://github.com/vpiotr/xnode/actions/workflows/ci.yml)
+
+# License
 ================
-Software is published under BSD license, see LICENSE.txt for details.
+BSD
 
-Project home
+# Project home
 ================
 https://github.com/vpiotr/xnode
 
-Purpose
+# Purpose
 ================
-* for support of variables with dynamic type
-* for on-the-fly conversion between string-int-long etc. 
-* for support of dynamic tuples (as arguments or return values)
-* for support of optional named parameters with default values
-* for processing of dynamic structures like JSON, XML or INI files with values where type information can be missing
+Support for dynamic typing in C++.
 
-Features
+# Features
 ================
-* handles the following value types: null, scalar, pointer, owned object
-* size of object is minimal (2x pointers inside)
-* scalar types are stored without dynamic allocation
-* supports storing of value for any struct, class or scalar without changing single line in library
-* supports polymorphism
+* dynamically typed values
+* type checking
+* type conversion
+* STL compatibility
+* header-only library
+* template based design
+* extensible for custom type conversions
+* property lists and vector containers for advanced data structures
+* no external dependencies beyond C++ STL
 
-Benefits
+# Benefits
 ================
 * dynamic typing
 
@@ -37,7 +39,7 @@ Benefits
 		Assert(value.type() == typeid(int));
 
 		value.set_as(false);
-		Assert(value.is<bool>()));
+		Assert(value.is<bool>())));
 
 * perform on-fly transparent conversion & type checking
 
@@ -89,21 +91,7 @@ Benefits
 			Assert(value.is<TestStr>());
 		}
 
-* store pointers (non-owned blocks of memory)
-
-		void TestReleaseNonOwned() {
-			xnode svalue;
-		
-			char test[] = "Test";
-			svalue.set_as(&test[0]);
-			Assert(svalue.release<char *>() == nullptr);
-		
-			svalue.set_as(5);
-			Assert(svalue.release<int>() == nullptr);
-		}
-
-
-Conversion
+# Conversion
 ======================
 Example conversion matrix defined in xnode_builtins.h specify conversion between types:
 
@@ -115,33 +103,68 @@ Example conversion matrix defined in xnode_builtins.h specify conversion between
 
 Conversion between types can be user-defined (see xnode_long_double.h & TestLongDoubleWithPolicy).
 		
-Supported environments
+# Supported environments
 ======================
 * compiler: any compiler with C++11 support 
 * tested with:
   * VS 2015 C++ compiler 
   * GCC 4.8.1 (under MinGW)
+  * Recent compilers (GCC, Clang)
 
-External dependencies
+# External dependencies
 =====================
 * just C++ standard library, including std::string
         
-Other similar efforts
+# Other similar efforts
 ========================
 * boost::any
 * boost::variant
 
-Building
+# Building
 ====================
-In order to build the test application just add all *.cpp files to your project 
-from directory "\test" and add "\include" to include path.
+xnode is a header-only library, so you can just include the headers in your project.
 
-Contact information
+## Using CMake (Recommended)
+xnode uses modern CMake for its build system. To build and install:
+
+```bash
+# Create build directory
+mkdir build
+cd build
+
+# Configure (customize your options as needed)
+cmake ..
+
+# Build the tests
+cmake --build .
+
+# Run the tests
+ctest
+
+# Install the library (may require elevated privileges)
+cmake --install .
+```
+
+### CMake Options
+- `XNODE_BUILD_TESTS` - Build tests (ON by default)
+
+## Using the library in your CMake project
+After installing, you can use the library in your own CMake project:
+
+```cmake
+find_package(xnode REQUIRED)
+target_link_libraries(your_target PRIVATE xnode::xnode)
+```
+
+## Manual Integration
+For simple projects, you can just copy the headers from the `include` directory into your project.
+
+# Contact information
 ====================
 * [Google+](https://plus.google.com/114326541605789029332/) 
 * [LinkedIn](http://pl.linkedin.com/pub/piotr-likus/2/307/7b9/)
 
-Documentation
+# Documentation
 ====================
 To build documentation, use Code::Blocks 13 and command:
 
@@ -149,8 +172,7 @@ To build documentation, use Code::Blocks 13 and command:
 
 Output will be generated into: "./help/html/" directory in html format.
 
-Release History
+# Release History
 ====================
 See the [CHANGELOG](doc/CHANGELOG).
 
-    
