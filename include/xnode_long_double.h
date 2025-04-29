@@ -36,14 +36,18 @@ public:
     typedef double ValueType;
 
     static bool cast_to_value(ValueType &output, void **storage, int srcTypeCode) {
+        std::cout << "DEBUG: xnode_caster<double>::cast_to_value, step 1" << std::endl;
         bool result = true;
 
         // Special handling for long double
         if (srcTypeCode == xnode_type_code<long double>::value) {
+            std::cout << "DEBUG: xnode_caster<double>::cast_to_value, step 2a" << std::endl;
             output = static_cast<double>(*reinterpret_cast<long double*>(*storage));
+            std::cout << "DEBUG: xnode_caster<double>::cast_to_value, step 2b" << std::endl;
             return true;
         }
         
+        std::cout << "DEBUG: xnode_caster<double>::cast_to_value, step 3" << std::endl;
         // For all other types, use default policy
         return xnode_caster<double, xnode_def_cast_policy>::cast_to_value(output, storage, srcTypeCode);
     }
