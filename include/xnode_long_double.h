@@ -11,6 +11,13 @@
 #define __XNODE_LONG_DOUBLE_H__
 
 #include "xnode.h"
+#include <typeinfo>
+
+// Define a specific type code for long double to distinguish it
+template<>
+struct xnode_type_code<long double> {
+    enum { value = 15 }; // Ensure this doesn't conflict with other type codes
+};
 
 struct xnode_ld_cast_policy {
 
@@ -19,9 +26,90 @@ struct xnode_ld_cast_policy {
 typedef xnode_def_cast_policy xnode_ld_value_policy_base;
 
 struct xnode_ld_value_policy : xnode_ld_value_policy_base {
-	typedef xnode_ld_cast_policy cast_policy;
+    typedef xnode_ld_cast_policy cast_policy;
 };
 
+// Specialized caster for double to handle long double conversion
+template<>
+class xnode_caster<double, xnode_ld_cast_policy> : xnode_caster_base {
+public:
+    typedef double ValueType;
+
+    static bool cast_to_value(ValueType &output, void **storage, int srcTypeCode) {
+        bool result = true;
+
+        // Special handling for long double
+        if (srcTypeCode == xnode_type_code<long double>::value) {
+            output = static_cast<double>(*reinterpret_cast<long double*>(*storage));
+            return true;
+        }
+        
+        // For all other types, use default policy
+        return xnode_caster<double, xnode_def_cast_policy>::cast_to_value(output, storage, srcTypeCode);
+    }
+
+    static bool cast_from_value(void **storage, int destTypeCode, const ValueType &value) {
+        // Use default policy for all cases
+        return xnode_caster<double, xnode_def_cast_policy>::cast_from_value(storage, destTypeCode, value);
+    }
+};
+
+// Specialized caster for long double 
+template<>
+class xnode_caster<long double, xnode_ld_cast_policy> : xnode_caster_base {
+public:
+    typedef long double ValueType;
+
+    static bool cast_to_value(ValueType &output, void **storage, int srcTypeCode) {
+        bool result = true;
+
+        switch (srcTypeCode) {
+            case xnode_type_code<double>::value: {
+                output = static_cast<ValueType>(*reinterpret_cast<double*>(*storage));
+                break;
+            }
+            case xnode_type_code<float>::value: {
+                output = static_cast<ValueType>(*reinterpret_cast<float*>(*storage));
+                break;
+            }
+            case xnode_type_code<long double>::value: {
+                output = *reinterpret_cast<long double*>(*storage);
+                break;
+            }
+            case xnode_type_code<int>::value: {
+                output = static_cast<ValueType>(*reinterpret_cast<int*>(*storage));
+                break;
+            }
+            default: {
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    static bool cast_from_value(void **storage, int destTypeCode, const ValueType &value) {
+        bool result = true;
+
+        switch (destTypeCode) {
+            case xnode_type_code<double>::value: {
+                *reinterpret_cast<double*>(*storage) = static_cast<double>(value);
+                break;
+            }
+            case xnode_type_code<float>::value: {
+                *reinterpret_cast<float*>(*storage) = static_cast<float>(value);
+                break;
+            }
+            case xnode_type_code<long double>::value: {
+                *reinterpret_cast<long double*>(*storage) = value;
+                break;
+            }
+            default: {
+                result = false;
+            }
+        }
+        return result;
+    }
+};
 
 #include "details/xnode_builtins.h"
 

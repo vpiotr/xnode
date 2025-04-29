@@ -666,17 +666,11 @@ void TestLongDoubleNotConvertable() {
 }
 
 void TestLongDoubleCastWithPolicy() {
-#if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
-    // Original test works on Windows platforms
     typedef basic_xnode<xnode_ld_value_policy> xnode_ld;
     long double d = 12.14;
     xnode_ld value = xnode_ld::value_of(d);
     Assert(value.is<long double>());
     Assert(value.get_as<double>() > 0.0);
-#else
-    // Skip test on other platforms where long double conversion may differ
-    std::cout << "Skipping TestLongDoubleCastWithPolicy on this platform" << std::endl;
-#endif
 }
 
 void TestWrongCastThrows() {
