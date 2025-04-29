@@ -782,8 +782,8 @@ int xnode_test() {
     TEST_FUNC(LongDoubleNotConvertable);
     TEST_FUNC(LongDoubleWithPolicyConstruct);
     TEST_FUNC(LongDoubleWithPolicySet);
-    TEST_FUNC(LongDoubleCastWithPolicyConstruct);
     TEST_FUNC(LongDoubleCastWithPolicySet);
+    TEST_FUNC(LongDoubleCastWithPolicyConstruct);
     TEST_FUNC(WrongCastThrows);
     TEST_FUNC(SafeCastNoThrow);
 	TEST_EPILOG();
