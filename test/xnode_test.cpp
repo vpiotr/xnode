@@ -666,11 +666,17 @@ void TestLongDoubleNotConvertable() {
 }
 
 void TestLongDoubleCastWithPolicy() {
+	std::cout << "DEBUG: TestLongDoubleCastWithPolicy step 0" << std::endl;
     typedef basic_xnode<xnode_ld_value_policy> xnode_ld;
     long double d = 12.14;
     xnode_ld value = xnode_ld::value_of(d);
+	std::cout << "DEBUG: TestLongDoubleCastWithPolicy step 1" << std::endl;
     Assert(value.is<long double>());
+	std::cout << "DEBUG: TestLongDoubleCastWithPolicy step 2" << std::endl;
+    Assert(value.get_as<long double>() > 0.0);
+	std::cout << "DEBUG: TestLongDoubleCastWithPolicy step 3" << std::endl;
     Assert(value.get_as<double>() > 0.0);
+	std::cout << "DEBUG: TestLongDoubleCastWithPolicy step 4" << std::endl;
 }
 
 void TestWrongCastThrows() {
