@@ -1,23 +1,18 @@
 # Introduction
-================
 xnode is a lightweight, header-only C++ library for dynamically typed values with automatic conversion between types.
 
 [![CI Build Status](https://github.com/vpiotr/xnode/actions/workflows/ci.yml/badge.svg)](https://github.com/vpiotr/xnode/actions/workflows/ci.yml)
 
 # License
-================
 BSD
 
 # Project home
-================
 https://github.com/vpiotr/xnode
 
 # Purpose
-================
 Support for dynamic typing in C++.
 
 # Features
-================
 * dynamically typed values
 * type checking
 * type conversion
@@ -29,7 +24,6 @@ Support for dynamic typing in C++.
 * no external dependencies beyond C++ STL
 
 # Benefits
-================
 * dynamic typing
 
 		xnode value;
@@ -91,8 +85,21 @@ Support for dynamic typing in C++.
 			Assert(value.is<TestStr>());
 		}
 
+* store pointers (non-owned blocks of memory)
+
+		void TestReleaseNonOwned() {
+			xnode svalue;
+		
+			char test[] = "Test";
+			svalue.set_as(&test[0]);
+			Assert(svalue.release<char *>() == nullptr);
+		
+			svalue.set_as(5);
+			Assert(svalue.release<int>() == nullptr);
+		}
+
+
 # Conversion
-======================
 Example conversion matrix defined in xnode_builtins.h specify conversion between types:
 
 * bool
@@ -104,7 +111,6 @@ Example conversion matrix defined in xnode_builtins.h specify conversion between
 Conversion between types can be user-defined (see xnode_long_double.h & TestLongDoubleWithPolicy).
 		
 # Supported environments
-======================
 * compiler: any compiler with C++11 support 
 * tested with:
   * VS 2015 C++ compiler 
@@ -112,16 +118,13 @@ Conversion between types can be user-defined (see xnode_long_double.h & TestLong
   * Recent compilers (GCC, Clang)
 
 # External dependencies
-=====================
 * just C++ standard library, including std::string
         
 # Other similar efforts
-========================
 * boost::any
 * boost::variant
 
 # Building
-====================
 xnode is a header-only library, so you can just include the headers in your project.
 
 ## Using CMake (Recommended)
@@ -160,12 +163,9 @@ target_link_libraries(your_target PRIVATE xnode::xnode)
 For simple projects, you can just copy the headers from the `include` directory into your project.
 
 # Contact information
-====================
-* [Google+](https://plus.google.com/114326541605789029332/) 
 * [LinkedIn](http://pl.linkedin.com/pub/piotr-likus/2/307/7b9/)
 
 # Documentation
-====================
 To build documentation, use Code::Blocks 13 and command:
 
     DoxyBlocks \ Extract documentation
@@ -173,6 +173,5 @@ To build documentation, use Code::Blocks 13 and command:
 Output will be generated into: "./help/html/" directory in html format.
 
 # Release History
-====================
 See the [CHANGELOG](doc/CHANGELOG).
 

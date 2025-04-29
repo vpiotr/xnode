@@ -41,3 +41,9 @@ CMakeUserPresets.json
 help/
 doc/html/
 doc/latex/
+
+# Internal documentation
+doc/internal/
+
+# Backup directory
+backup/
