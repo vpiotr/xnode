@@ -4,6 +4,7 @@ bin/
 lib/
 install/
 out/
+**/cmake-build-debug/
 
 # CMake generated files
 CMakeCache.txt
@@ -13,6 +14,7 @@ cmake_install.cmake
 compile_commands.json
 CTestTestfile.cmake
 Testing/
+**/Testing/Temporary/
 
 # IDE files
 .vs/

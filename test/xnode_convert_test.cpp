@@ -42,57 +42,57 @@ void TestBoolToTypes() {
     
     // Test conversion to bool
     LogConversion("bool", "bool");
-    Assert(value.get_as<bool>() == true, "bool to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "bool to bool conversion");
     
     // Test conversion to numeric types
     LogConversion("bool", "int");
-    Assert(value.get_as<int>() == 1, "bool to int conversion");
+    AssertEquals(1, value.get_as<int>(), "bool to int conversion");
     
     LogConversion("bool", "float");
-    Assert(value.get_as<float>() == 1.0f, "bool to float conversion");
+    AssertEquals(1.0f, value.get_as<float>(), "bool to float conversion");
     
     LogConversion("bool", "double");
-    Assert(value.get_as<double>() == 1.0, "bool to double conversion");
+    AssertEquals(1.0, value.get_as<double>(), "bool to double conversion");
     
     LogConversion("bool", "char");
-    Assert(value.get_as<char>() == 1, "bool to char conversion");
+    AssertEquals((char)1, value.get_as<char>(), "bool to char conversion");
     
     LogConversion("bool", "short");
-    Assert(value.get_as<short>() == 1, "bool to short conversion");
+    AssertEquals((short)1, value.get_as<short>(), "bool to short conversion");
     
     LogConversion("bool", "long");
-    Assert(value.get_as<long>() == 1L, "bool to long conversion");
+    AssertEquals(1L, value.get_as<long>(), "bool to long conversion");
     
     LogConversion("bool", "long long");
-    Assert(value.get_as<long long>() == 1LL, "bool to long long conversion");
+    AssertEquals(1LL, value.get_as<long long>(), "bool to long long conversion");
     
     // Test conversion to unsigned types
     LogConversion("bool", "unsigned int");
-    Assert(value.get_as<unsigned int>() == 1U, "bool to unsigned int conversion");
+    AssertEquals(1U, value.get_as<unsigned int>(), "bool to unsigned int conversion");
     
     LogConversion("bool", "unsigned char");
-    Assert(value.get_as<unsigned char>() == (unsigned char)1, "bool to unsigned char conversion");
+    AssertEquals((unsigned char)1, value.get_as<unsigned char>(), "bool to unsigned char conversion");
     
     LogConversion("bool", "unsigned short");
-    Assert(value.get_as<unsigned short>() == (unsigned short)1, "bool to unsigned short conversion");
+    AssertEquals((unsigned short)1, value.get_as<unsigned short>(), "bool to unsigned short conversion");
     
     LogConversion("bool", "unsigned long");
-    Assert(value.get_as<unsigned long>() == 1UL, "bool to unsigned long conversion");
+    AssertEquals(1UL, value.get_as<unsigned long>(), "bool to unsigned long conversion");
     
     LogConversion("bool", "unsigned long long");
-    Assert(value.get_as<unsigned long long>() == 1ULL, "bool to unsigned long long conversion");
+    AssertEquals(1ULL, value.get_as<unsigned long long>(), "bool to unsigned long long conversion");
     
     // Test conversion to string
     LogConversion("bool", "string");
-    Assert(value.get_as<std::string>() == "true", "bool to string conversion");
+    AssertEquals(std::string("true"), value.get_as<std::string>(), "bool to string conversion");
     
     // Test with false value
     value.set_as(false);
     LogConversion("bool(false)", "string");
-    Assert(value.get_as<std::string>() == "false", "bool(false) to string conversion");
+    AssertEquals(std::string("false"), value.get_as<std::string>(), "bool(false) to string conversion");
     
     LogConversion("bool(false)", "int");
-    Assert(value.get_as<int>() == 0, "bool(false) to int conversion");
+    AssertEquals(0, value.get_as<int>(), "bool(false) to int conversion");
 }
 
 //----------------------------------------------------------------------
@@ -110,62 +110,62 @@ void TestIntToTypes() {
     
     // Test conversion to bool
     LogConversion("int", "bool");
-    Assert(value.get_as<bool>() == true, "int to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "int to bool conversion");
     
     // Test with zero
     value.set_as(0);
     LogConversion("int(0)", "bool");
-    Assert(value.get_as<bool>() == false, "int(0) to bool conversion");
+    AssertEquals(false, value.get_as<bool>(), "int(0) to bool conversion");
 
     // Test with one
     value.set_as(1);
     LogConversion("int(1)", "bool");
-    Assert(value.get_as<bool>() == true, "int(1) to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "int(1) to bool conversion");
     
     // Reset to original value
     value.set_as(sourceValue);
     
     // Test conversion to numeric types
     LogConversion("int", "int");
-    Assert(value.get_as<int>() == 123, "int to int conversion");
+    AssertEquals(123, value.get_as<int>(), "int to int conversion");
     
     LogConversion("int", "float");
-    Assert(value.get_as<float>() == 123.0f, "int to float conversion");
+    AssertEquals(123.0f, value.get_as<float>(), "int to float conversion");
     
     LogConversion("int", "double");
-    Assert(value.get_as<double>() == 123.0, "int to double conversion");
+    AssertEquals(123.0, value.get_as<double>(), "int to double conversion");
     
     LogConversion("int", "char");
-    Assert(value.get_as<char>() == (char)123, "int to char conversion");
+    AssertEquals((char)123, value.get_as<char>(), "int to char conversion");
     
     LogConversion("int", "short");
-    Assert(value.get_as<short>() == (short)123, "int to short conversion");
+    AssertEquals((short)123, value.get_as<short>(), "int to short conversion");
     
     LogConversion("int", "long");
-    Assert(value.get_as<long>() == 123L, "int to long conversion");
+    AssertEquals(123L, value.get_as<long>(), "int to long conversion");
     
     LogConversion("int", "long long");
-    Assert(value.get_as<long long>() == 123LL, "int to long long conversion");
+    AssertEquals(123LL, value.get_as<long long>(), "int to long long conversion");
     
     // Test conversion to unsigned types
     LogConversion("int", "unsigned int");
-    Assert(value.get_as<unsigned int>() == 123U, "int to unsigned int conversion");
+    AssertEquals(123U, value.get_as<unsigned int>(), "int to unsigned int conversion");
     
     LogConversion("int", "unsigned char");
-    Assert(value.get_as<unsigned char>() == (unsigned char)123, "int to unsigned char conversion");
+    AssertEquals((unsigned char)123, value.get_as<unsigned char>(), "int to unsigned char conversion");
     
     LogConversion("int", "unsigned short");
-    Assert(value.get_as<unsigned short>() == (unsigned short)123, "int to unsigned short conversion");
+    AssertEquals((unsigned short)123, value.get_as<unsigned short>(), "int to unsigned short conversion");
     
     LogConversion("int", "unsigned long");
-    Assert(value.get_as<unsigned long>() == 123UL, "int to unsigned long conversion");
+    AssertEquals(123UL, value.get_as<unsigned long>(), "int to unsigned long conversion");
     
     LogConversion("int", "unsigned long long");
-    Assert(value.get_as<unsigned long long>() == 123ULL, "int to unsigned long long conversion");
+    AssertEquals(123ULL, value.get_as<unsigned long long>(), "int to unsigned long long conversion");
     
     // Test conversion to string
     LogConversion("int", "string");
-    Assert(value.get_as<std::string>() == "123", "int to string conversion");
+    AssertEquals(std::string("123"), value.get_as<std::string>(), "int to string conversion");
 }
 
 void TestNegativeIntToTypes() {
@@ -179,27 +179,27 @@ void TestNegativeIntToTypes() {
     
     // Test conversion to bool
     LogConversion("int(-)", "bool");
-    Assert(value.get_as<bool>() == true, "negative int to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "negative int to bool conversion");
     
     // Test conversion to numeric types
     LogConversion("int(-)", "int");
-    Assert(value.get_as<int>() == -123, "negative int to int conversion");
+    AssertEquals(-123, value.get_as<int>(), "negative int to int conversion");
     
     LogConversion("int(-)", "float");
-    Assert(value.get_as<float>() == -123.0f, "negative int to float conversion");
+    AssertEquals(-123.0f, value.get_as<float>(), "negative int to float conversion");
     
     LogConversion("int(-)", "double");
-    Assert(value.get_as<double>() == -123.0, "negative int to double conversion");
+    AssertEquals(-123.0, value.get_as<double>(), "negative int to double conversion");
     
     LogConversion("int(-)", "long");
-    Assert(value.get_as<long>() == -123L, "negative int to long conversion");
+    AssertEquals(-123L, value.get_as<long>(), "negative int to long conversion");
     
     LogConversion("int(-)", "long long");
-    Assert(value.get_as<long long>() == -123LL, "negative int to long long conversion");
+    AssertEquals(-123LL, value.get_as<long long>(), "negative int to long long conversion");
     
     // Test conversion to string
     LogConversion("int(-)", "string");
-    Assert(value.get_as<std::string>() == "-123", "negative int to string conversion");
+    AssertEquals(std::string("-123"), value.get_as<std::string>(), "negative int to string conversion");
 }
 
 //----------------------------------------------------------------------
@@ -217,53 +217,53 @@ void TestShortToTypes() {
     
     // Test conversion to bool
     LogConversion("short", "bool");
-    Assert(value.get_as<bool>() == true, "short to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "short to bool conversion");
     
     // Test with zero
     value.set_as((short)0);
     LogConversion("short(0)", "bool");
-    Assert(value.get_as<bool>() == false, "short(0) to bool conversion");
+    AssertEquals(false, value.get_as<bool>(), "short(0) to bool conversion");
     
     // Reset to original value
     value.set_as(sourceValue);
     
     // Test conversion to numeric types
     LogConversion("short", "int");
-    Assert(value.get_as<int>() == 12345, "short to int conversion");
+    AssertEquals(12345, value.get_as<int>(), "short to int conversion");
     
     LogConversion("short", "float");
-    Assert(value.get_as<float>() == 12345.0f, "short to float conversion");
+    AssertEquals(12345.0f, value.get_as<float>(), "short to float conversion");
     
     LogConversion("short", "double");
-    Assert(value.get_as<double>() == 12345.0, "short to double conversion");
+    AssertEquals(12345.0, value.get_as<double>(), "short to double conversion");
     
     LogConversion("short", "char");
-    Assert(value.get_as<char>() == (char)12345, "short to char conversion (will truncate)");
+    AssertEquals((char)12345, value.get_as<char>(), "short to char conversion (will truncate)");
     
     LogConversion("short", "long");
-    Assert(value.get_as<long>() == 12345L, "short to long conversion");
+    AssertEquals(12345L, value.get_as<long>(), "short to long conversion");
     
     LogConversion("short", "long long");
-    Assert(value.get_as<long long>() == 12345LL, "short to long long conversion");
+    AssertEquals(12345LL, value.get_as<long long>(), "short to long long conversion");
     
     // Test conversion to unsigned types
     LogConversion("short", "unsigned int");
-    Assert(value.get_as<unsigned int>() == 12345U, "short to unsigned int conversion");
+    AssertEquals(12345U, value.get_as<unsigned int>(), "short to unsigned int conversion");
     
     LogConversion("short", "unsigned short");
-    Assert(value.get_as<unsigned short>() == (unsigned short)12345, "short to unsigned short conversion");
+    AssertEquals((unsigned short)12345, value.get_as<unsigned short>(), "short to unsigned short conversion");
     
     // Test conversion to string
     LogConversion("short", "string");
-    Assert(value.get_as<std::string>() == "12345", "short to string conversion");
+    AssertEquals(std::string("12345"), value.get_as<std::string>(), "short to string conversion");
     
     // Test with negative value
     value.set_as((short)-12345);
     LogConversion("short(-)", "int");
-    Assert(value.get_as<int>() == -12345, "negative short to int conversion");
+    AssertEquals(-12345, value.get_as<int>(), "negative short to int conversion");
     
     LogConversion("short(-)", "string");
-    Assert(value.get_as<std::string>() == "-12345", "negative short to string conversion");
+    AssertEquals(std::string("-12345"), value.get_as<std::string>(), "negative short to string conversion");
 }
 
 //----------------------------------------------------------------------
@@ -281,24 +281,24 @@ void TestFloatToTypes() {
     
     // Test conversion to bool
     LogConversion("float", "bool");
-    Assert(value.get_as<bool>() == true, "float to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "float to bool conversion");
     
     // Test with zero
     value.set_as(0.0f);
     LogConversion("float(0)", "bool");
-    Assert(value.get_as<bool>() == false, "float(0) to bool conversion");
+    AssertEquals(false, value.get_as<bool>(), "float(0) to bool conversion");
     
     // Test with one
     value.set_as(1.0f);
     LogConversion("float(1)", "bool");
-    Assert(value.get_as<bool>() == true, "float(1) to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "float(1) to bool conversion");
     
     // Reset to original value
     value.set_as(sourceValue);
     
     // Test conversion to numeric types
     LogConversion("float", "int");
-    Assert(value.get_as<int>() == 123, "float to int conversion");
+    AssertEquals(123, value.get_as<int>(), "float to int conversion");
     
     LogConversion("float", "float");
     Assert(abs(value.get_as<float>() - 123.456f) < 0.001f, "float to float conversion");
@@ -307,17 +307,17 @@ void TestFloatToTypes() {
     Assert(abs(value.get_as<double>() - 123.456) < 0.001, "float to double conversion");
     
     LogConversion("float", "long");
-    Assert(value.get_as<long>() == 123L, "float to long conversion");
+    AssertEquals(123L, value.get_as<long>(), "float to long conversion");
     
     LogConversion("float", "long long");
-    Assert(value.get_as<long long>() == 123LL, "float to long long conversion");
+    AssertEquals(123LL, value.get_as<long long>(), "float to long long conversion");
     
     // Test conversion to unsigned types
     LogConversion("float", "unsigned int");
-    Assert(value.get_as<unsigned int>() == 123U, "float to unsigned int conversion");
+    AssertEquals(123U, value.get_as<unsigned int>(), "float to unsigned int conversion");
     
     LogConversion("float", "unsigned long");
-    Assert(value.get_as<unsigned long>() == 123UL, "float to unsigned long conversion");
+    AssertEquals(123UL, value.get_as<unsigned long>(), "float to unsigned long conversion");
     
     // Test conversion to string
     LogConversion("float", "string");
@@ -340,11 +340,11 @@ void TestNegativeFloatToTypes() {
     
     // Test conversion to bool
     LogConversion("float(-)", "bool");
-    Assert(value.get_as<bool>() == true, "negative float to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "negative float to bool conversion");
     
     // Test conversion to numeric types
     LogConversion("float(-)", "int");
-    Assert(value.get_as<int>() == -123, "negative float to int conversion");
+    AssertEquals(-123, value.get_as<int>(), "negative float to int conversion");
     
     LogConversion("float(-)", "float");
     Assert(abs(value.get_as<float>() - (-123.456f)) < 0.001f, "negative float to float conversion");
@@ -353,10 +353,10 @@ void TestNegativeFloatToTypes() {
     Assert(abs(value.get_as<double>() - (-123.456)) < 0.001, "negative float to double conversion");
     
     LogConversion("float(-)", "long");
-    Assert(value.get_as<long>() == -123L, "negative float to long conversion");
+    AssertEquals(-123L, value.get_as<long>(), "negative float to long conversion");
     
     LogConversion("float(-)", "long long");
-    Assert(value.get_as<long long>() == -123LL, "negative float to long long conversion");
+    AssertEquals(-123LL, value.get_as<long long>(), "negative float to long long conversion");
     
     // Test conversion to string
     LogConversion("float(-)", "string");
@@ -379,24 +379,24 @@ void TestDoubleToTypes() {
     
     // Test conversion to bool
     LogConversion("double", "bool");
-    Assert(value.get_as<bool>() == true, "double to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "double to bool conversion");
     
     // Test with zero
     value.set_as(0.0);
     LogConversion("double(0)", "bool");
-    Assert(value.get_as<bool>() == false, "double(0) to bool conversion");
+    AssertEquals(false, value.get_as<bool>(), "double(0) to bool conversion");
     
     // Test with one
     value.set_as(1.0);
     LogConversion("double(1)", "bool");
-    Assert(value.get_as<bool>() == true, "double(1) to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "double(1) to bool conversion");
     
     // Reset to original value
     value.set_as(sourceValue);
     
     // Test conversion to numeric types
     LogConversion("double", "int");
-    Assert(value.get_as<int>() == 123, "double to int conversion");
+    AssertEquals(123, value.get_as<int>(), "double to int conversion");
     
     LogConversion("double", "float");
     Assert(abs(value.get_as<float>() - 123.456f) < 0.001f, "double to float conversion");
@@ -405,17 +405,17 @@ void TestDoubleToTypes() {
     Assert(abs(value.get_as<double>() - 123.456789) < 0.0001, "double to double conversion");
     
     LogConversion("double", "long");
-    Assert(value.get_as<long>() == 123L, "double to long conversion");
+    AssertEquals(123L, value.get_as<long>(), "double to long conversion");
     
     LogConversion("double", "long long");
-    Assert(value.get_as<long long>() == 123LL, "double to long long conversion");
+    AssertEquals(123LL, value.get_as<long long>(), "double to long long conversion");
     
     // Test conversion to unsigned types
     LogConversion("double", "unsigned int");
-    Assert(value.get_as<unsigned int>() == 123U, "double to unsigned int conversion");
+    AssertEquals(123U, value.get_as<unsigned int>(), "double to unsigned int conversion");
     
     LogConversion("double", "unsigned long");
-    Assert(value.get_as<unsigned long>() == 123UL, "double to unsigned long conversion");
+    AssertEquals(123UL, value.get_as<unsigned long>(), "double to unsigned long conversion");
     
     // Test conversion to string
     LogConversion("double", "string");
@@ -438,11 +438,11 @@ void TestNegativeDoubleToTypes() {
     
     // Test conversion to bool
     LogConversion("double(-)", "bool");
-    Assert(value.get_as<bool>() == true, "negative double to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "negative double to bool conversion");
     
     // Test conversion to numeric types
     LogConversion("double(-)", "int");
-    Assert(value.get_as<int>() == -123, "negative double to int conversion");
+    AssertEquals(-123, value.get_as<int>(), "negative double to int conversion");
     
     LogConversion("double(-)", "float");
     Assert(abs(value.get_as<float>() - (-123.456f)) < 0.001f, "negative double to float conversion");
@@ -451,10 +451,10 @@ void TestNegativeDoubleToTypes() {
     Assert(abs(value.get_as<double>() - (-123.456789)) < 0.0001, "negative double to double conversion");
     
     LogConversion("double(-)", "long");
-    Assert(value.get_as<long>() == -123L, "negative double to long conversion");
+    AssertEquals(-123L, value.get_as<long>(), "negative double to long conversion");
     
     LogConversion("double(-)", "long long");
-    Assert(value.get_as<long long>() == -123LL, "negative double to long long conversion");
+    AssertEquals(-123LL, value.get_as<long long>(), "negative double to long long conversion");
     
     // Test conversion to string
     LogConversion("double(-)", "string");
@@ -477,51 +477,51 @@ void TestCharToTypes() {
     
     // Test conversion to bool
     LogConversion("char", "bool");
-    Assert(value.get_as<bool>() == true, "char to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "char to bool conversion");
     
     // Test with zero
     value.set_as((char)0);
     LogConversion("char(0)", "bool");
-    Assert(value.get_as<bool>() == false, "char(0) to bool conversion");
+    AssertEquals(false, value.get_as<bool>(), "char(0) to bool conversion");
     
     // Test with one
     value.set_as((char)1);
     LogConversion("char(1)", "bool");
-    Assert(value.get_as<bool>() == true, "char(1) to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "char(1) to bool conversion");
     
     // Reset to original value
     value.set_as(sourceValue);
     
     // Test conversion to numeric types
     LogConversion("char", "int");
-    Assert(value.get_as<int>() == 65, "char to int conversion");
+    AssertEquals(65, value.get_as<int>(), "char to int conversion");
     
     LogConversion("char", "float");
-    Assert(value.get_as<float>() == 65.0f, "char to float conversion");
+    AssertEquals(65.0f, value.get_as<float>(), "char to float conversion");
     
     LogConversion("char", "double");
-    Assert(value.get_as<double>() == 65.0, "char to double conversion");
+    AssertEquals(65.0, value.get_as<double>(), "char to double conversion");
     
     LogConversion("char", "char");
-    Assert(value.get_as<char>() == 'A', "char to char conversion");
+    AssertEquals('A', value.get_as<char>(), "char to char conversion");
     
     LogConversion("char", "short");
-    Assert(value.get_as<short>() == 65, "char to short conversion");
+    AssertEquals((short)65, value.get_as<short>(), "char to short conversion");
     
     LogConversion("char", "long");
-    Assert(value.get_as<long>() == 65L, "char to long conversion");
+    AssertEquals(65L, value.get_as<long>(), "char to long conversion");
     
     // Test conversion to unsigned types
     LogConversion("char", "unsigned int");
-    Assert(value.get_as<unsigned int>() == 65U, "char to unsigned int conversion");
+    AssertEquals(65U, value.get_as<unsigned int>(), "char to unsigned int conversion");
     
     LogConversion("char", "unsigned char");
-    Assert(value.get_as<unsigned char>() == 65, "char to unsigned char conversion");
+    AssertEquals((unsigned char)65, value.get_as<unsigned char>(), "char to unsigned char conversion");
     
     // Test conversion to string
     LogConversion("char", "string");
     std::string str = value.get_as<std::string>();
-    Assert(str == "A", "char to string conversion");
+    AssertEquals(std::string("A"), str, "char to string conversion");
 }
 
 //----------------------------------------------------------------------
@@ -770,11 +770,11 @@ void TestNegativeLongToTypes() {
     
     // Test conversion to bool
     LogConversion("long(-)", "bool");
-    Assert(value.get_as<bool>() == true, "negative long to bool conversion");
+    AssertEquals(true, value.get_as<bool>(), "negative long to bool conversion");
     
     // Test conversion to numeric types
     LogConversion("long(-)", "int");
-    Assert(value.get_as<int>() == (int)-123456789L, "negative long to int conversion");
+    AssertEquals((int)-123456789L, value.get_as<int>(), "negative long to int conversion");
     
     LogConversion("long(-)", "float");
     Assert(abs(value.get_as<float>() - (-123456789.0f)) < 1.0f, "negative long to float conversion");
@@ -783,14 +783,14 @@ void TestNegativeLongToTypes() {
     Assert(abs(value.get_as<double>() - (-123456789.0)) < 1.0, "negative long to double conversion");
     
     LogConversion("long(-)", "long");
-    Assert(value.get_as<long>() == -123456789L, "negative long to long conversion");
+    AssertEquals(-123456789L, value.get_as<long>(), "negative long to long conversion");
     
     LogConversion("long(-)", "long long");
-    Assert(value.get_as<long long>() == -123456789LL, "negative long to long long conversion");
+    AssertEquals(-123456789LL, value.get_as<long long>(), "negative long to long long conversion");
     
     // Test conversion to string
     LogConversion("long(-)", "string");
-    Assert(value.get_as<std::string>() == "-123456789", "negative long to string conversion");
+    AssertEquals(std::string("-123456789"), value.get_as<std::string>(), "negative long to string conversion");
 }
 
 //----------------------------------------------------------------------
