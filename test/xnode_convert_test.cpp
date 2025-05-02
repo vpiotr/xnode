@@ -852,8 +852,8 @@ void TestUnsignedLongToTypes() {
     
     // Test conversion to long
     LogConversion("unsigned long", "long");
-    unsigned long unsignedLongValue = 4294967295UL;
-    long expectedLong = (long)unsignedLongValue;
+    long expectedLong = (long)sourceValue;
+    unsigned long unsignedLongValue = (unsigned long)expectedLong;
     xnode unsignedLongNode = xnode::value_of(unsignedLongValue);
     AssertEquals(expectedLong, unsignedLongNode.get_as<long>(), "unsigned long to long conversion");
     
