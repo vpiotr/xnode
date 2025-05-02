@@ -83,19 +83,19 @@ public:
 
         switch (srcTypeCode) {
             case xnode_type_code<double>::value: {
-                output = static_cast<ValueType>(*reinterpret_cast<double*>(*storage));
+                output = xnode_get_scalar<double>(storage);
                 break;
             }
             case xnode_type_code<float>::value: {
-                output = static_cast<ValueType>(*reinterpret_cast<float*>(*storage));
+                output = xnode_get_scalar<float>(storage);
                 break;
             }
             case xnode_type_code<long double>::value: {
-                output = *reinterpret_cast<long double*>(*storage);
+                output = xnode_get_scalar<long double>(storage);
                 break;
             }
             case xnode_type_code<int>::value: {
-                output = static_cast<ValueType>(*reinterpret_cast<int*>(*storage));
+                output = xnode_get_scalar<int>(storage);
                 break;
             }
             default: {

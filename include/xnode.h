@@ -669,8 +669,9 @@ public:
 			return result;
 		}
 
-        if (!xnode_caster<T, typename value_policy::cast_policy>::cast_to_value(result, const_cast<void **>(&value_), vtable_->type_code_))
+        if (!xnode_caster<T, typename value_policy::cast_policy>::cast_to_value(result, const_cast<void **>(&value_), vtable_->type_code_)) {
             throwWrongCastToValue<T>();
+	    }
 		return result;
 	}
 
