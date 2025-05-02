@@ -45,12 +45,18 @@ The table below shows the supported conversions between types. Each cell indicat
 
 ### Numeric Conversions
 
-- **Between numeric types**: Standard C++ casting rules apply
-- **Overflow behavior**: 
-  - When converting between numeric types directly, overflow may occur with no runtime checks
-  - When converting from string to numeric types, overflow and underflow conditions are detected and will throw exceptions:
+- **Between numeric types**: 
+  - Standard C++ casting rules apply with additional runtime safety checks
+  - Conversions that would cause overflow or underflow are detected and throw exceptions:
+    - Converting a larger integer type to a smaller type that cannot represent the value
+    - Converting a floating-point value to an integer type when the value exceeds integer range
+    - Converting a signed integer to an unsigned type when the value is negative
+    - Converting between unsigned types when the source value exceeds the destination type's range
+- **From string to numeric types**:
+  - Comprehensive overflow and underflow detection with appropriate exceptions:
     - `std::overflow_error` if the string represents a value too large for the target type
     - `std::underflow_error` if trying to convert a negative string value to an unsigned type
+    - `std::overflow_error` for extremely large floating-point strings (e.g., "1.0e+39" for float)
 
 ### String Conversions
 
@@ -101,4 +107,3 @@ bool canConvert = value.is_convertable_to<int>();  // true
 // Get with default value (no exceptions if conversion fails)
 int safe = value.get_as_def<int>(0);  // 123 (or 0 if conversion fails)
 ```
-````
