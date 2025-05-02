@@ -11,8 +11,15 @@ target_link_libraries(xnode_convert_test PRIVATE xnode)
 # Add conversion test to CTest
 add_test(NAME xnode_convert_test COMMAND xnode_convert_test)
 
+# Add conversion tests
+add_executable(xnode_type_test xnode_type_test.cpp)
+target_link_libraries(xnode_type_test PRIVATE xnode)
+
+# Add test to CTest
+add_test(NAME xnode_type_test COMMAND xnode_type_test)
+
 # Install the test executable if needed (optional)
-install(TARGETS xnode_test xnode_convert_test
+install(TARGETS xnode_test xnode_convert_test xnode_type_test
     RUNTIME DESTINATION bin
     OPTIONAL
 )
