@@ -16,6 +16,8 @@
 #include "xnode_vector.h"
 #include "xnode_property_list.h"
 #include "xnode_long_double.h"
+#include <limits>
+#include <cmath>
 
 using namespace std;
 
@@ -201,6 +203,70 @@ void TestNegativeIntToTypes() {
 }
 
 //----------------------------------------------------------------------
+// Short source tests
+//----------------------------------------------------------------------
+
+void TestShortToTypes() {
+    // Test converting from short to various types
+    short sourceValue = 12345;  // Near the upper limit for short (32767)
+    xnode value;
+    value.set_as(sourceValue);
+    
+    // Verify stored type
+    Assert(value.is<short>(), "Value should be stored as short");
+    
+    // Test conversion to bool
+    LogConversion("short", "bool");
+    Assert(value.get_as<bool>() == true, "short to bool conversion");
+    
+    // Test with zero
+    value.set_as((short)0);
+    LogConversion("short(0)", "bool");
+    Assert(value.get_as<bool>() == false, "short(0) to bool conversion");
+    
+    // Reset to original value
+    value.set_as(sourceValue);
+    
+    // Test conversion to numeric types
+    LogConversion("short", "int");
+    Assert(value.get_as<int>() == 12345, "short to int conversion");
+    
+    LogConversion("short", "float");
+    Assert(value.get_as<float>() == 12345.0f, "short to float conversion");
+    
+    LogConversion("short", "double");
+    Assert(value.get_as<double>() == 12345.0, "short to double conversion");
+    
+    LogConversion("short", "char");
+    Assert(value.get_as<char>() == (char)12345, "short to char conversion (will truncate)");
+    
+    LogConversion("short", "long");
+    Assert(value.get_as<long>() == 12345L, "short to long conversion");
+    
+    LogConversion("short", "long long");
+    Assert(value.get_as<long long>() == 12345LL, "short to long long conversion");
+    
+    // Test conversion to unsigned types
+    LogConversion("short", "unsigned int");
+    Assert(value.get_as<unsigned int>() == 12345U, "short to unsigned int conversion");
+    
+    LogConversion("short", "unsigned short");
+    Assert(value.get_as<unsigned short>() == (unsigned short)12345, "short to unsigned short conversion");
+    
+    // Test conversion to string
+    LogConversion("short", "string");
+    Assert(value.get_as<std::string>() == "12345", "short to string conversion");
+    
+    // Test with negative value
+    value.set_as((short)-12345);
+    LogConversion("short(-)", "int");
+    Assert(value.get_as<int>() == -12345, "negative short to int conversion");
+    
+    LogConversion("short(-)", "string");
+    Assert(value.get_as<std::string>() == "-12345", "negative short to string conversion");
+}
+
+//----------------------------------------------------------------------
 // Float source tests
 //----------------------------------------------------------------------
 
@@ -257,6 +323,45 @@ void TestFloatToTypes() {
     LogConversion("float", "string");
     std::string str = value.get_as<std::string>();
     Assert(str.find("123.") != std::string::npos, "float to string conversion");
+}
+
+//----------------------------------------------------------------------
+// Negative Float source tests
+//----------------------------------------------------------------------
+
+void TestNegativeFloatToTypes() {
+    // Test converting from negative float to various types
+    float sourceValue = -123.456f;
+    xnode value;
+    value.set_as(sourceValue);
+    
+    // Verify stored type
+    Assert(value.is<float>(), "Value should be stored as float");
+    
+    // Test conversion to bool
+    LogConversion("float(-)", "bool");
+    Assert(value.get_as<bool>() == true, "negative float to bool conversion");
+    
+    // Test conversion to numeric types
+    LogConversion("float(-)", "int");
+    Assert(value.get_as<int>() == -123, "negative float to int conversion");
+    
+    LogConversion("float(-)", "float");
+    Assert(abs(value.get_as<float>() - (-123.456f)) < 0.001f, "negative float to float conversion");
+    
+    LogConversion("float(-)", "double");
+    Assert(abs(value.get_as<double>() - (-123.456)) < 0.001, "negative float to double conversion");
+    
+    LogConversion("float(-)", "long");
+    Assert(value.get_as<long>() == -123L, "negative float to long conversion");
+    
+    LogConversion("float(-)", "long long");
+    Assert(value.get_as<long long>() == -123LL, "negative float to long long conversion");
+    
+    // Test conversion to string
+    LogConversion("float(-)", "string");
+    std::string str = value.get_as<std::string>();
+    Assert(str.find("-123.") != std::string::npos, "negative float to string conversion");
 }
 
 //----------------------------------------------------------------------
@@ -319,6 +424,45 @@ void TestDoubleToTypes() {
 }
 
 //----------------------------------------------------------------------
+// Negative Double source tests
+//----------------------------------------------------------------------
+
+void TestNegativeDoubleToTypes() {
+    // Test converting from negative double to various types
+    double sourceValue = -123.456789;
+    xnode value;
+    value.set_as(sourceValue);
+    
+    // Verify stored type
+    Assert(value.is<double>(), "Value should be stored as double");
+    
+    // Test conversion to bool
+    LogConversion("double(-)", "bool");
+    Assert(value.get_as<bool>() == true, "negative double to bool conversion");
+    
+    // Test conversion to numeric types
+    LogConversion("double(-)", "int");
+    Assert(value.get_as<int>() == -123, "negative double to int conversion");
+    
+    LogConversion("double(-)", "float");
+    Assert(abs(value.get_as<float>() - (-123.456f)) < 0.001f, "negative double to float conversion");
+    
+    LogConversion("double(-)", "double");
+    Assert(abs(value.get_as<double>() - (-123.456789)) < 0.0001, "negative double to double conversion");
+    
+    LogConversion("double(-)", "long");
+    Assert(value.get_as<long>() == -123L, "negative double to long conversion");
+    
+    LogConversion("double(-)", "long long");
+    Assert(value.get_as<long long>() == -123LL, "negative double to long long conversion");
+    
+    // Test conversion to string
+    LogConversion("double(-)", "string");
+    std::string str = value.get_as<std::string>();
+    Assert(str.find("-123.") != std::string::npos, "negative double to string conversion");
+}
+
+//----------------------------------------------------------------------
 // Character source tests
 //----------------------------------------------------------------------
 
@@ -378,6 +522,118 @@ void TestCharToTypes() {
     LogConversion("char", "string");
     std::string str = value.get_as<std::string>();
     Assert(str == "A", "char to string conversion");
+}
+
+//----------------------------------------------------------------------
+// Unsigned Character source tests
+//----------------------------------------------------------------------
+
+void TestUnsignedCharToTypes() {
+    // Test converting from unsigned char to various types
+    unsigned char sourceValue = 120; // Value greater than char max (127)
+    xnode value;
+    value.set_as(sourceValue);
+    
+    // Verify stored type
+    Assert(value.is<unsigned char>(), "Value should be stored as unsigned char");
+    
+    // Test conversion to bool
+    LogConversion("unsigned char", "bool");
+    Assert(value.get_as<bool>() == true, "unsigned char to bool conversion");
+    
+    // Test with zero
+    value.set_as((unsigned char)0);
+    LogConversion("unsigned char(0)", "bool");
+    Assert(value.get_as<bool>() == false, "unsigned char(0) to bool conversion");
+
+    // Test with one
+    value.set_as((unsigned char)1);
+    LogConversion("unsigned char(1)", "bool");
+    Assert(value.get_as<bool>() == true, "unsigned char(1) to bool conversion");   
+    
+    // Reset to original value
+    value.set_as(sourceValue);
+    
+    // Test conversion to numeric types
+    LogConversion("unsigned char", "int");
+    Assert(value.get_as<int>() == 120, "unsigned char to int conversion");
+    
+    LogConversion("unsigned char", "float");
+    Assert(value.get_as<float>() == 120.0f, "unsigned char to float conversion");
+    
+    LogConversion("unsigned char", "double");
+    Assert(value.get_as<double>() == 120.0, "unsigned char to double conversion");
+    
+    LogConversion("unsigned char", "char");
+    Assert(value.get_as<char>() == (char)120, "unsigned char to char conversion (may truncate)");
+    
+    LogConversion("unsigned char", "unsigned int");
+    Assert(value.get_as<unsigned int>() == 120U, "unsigned char to unsigned int conversion");
+    
+    LogConversion("unsigned char", "unsigned char");
+    Assert(value.get_as<unsigned char>() == 120, "unsigned char to unsigned char conversion");
+    
+    // Test conversion to string
+    LogConversion("unsigned char", "string");
+    std::string str = value.get_as<std::string>();
+    AssertEquals(std::string("")+(char)sourceValue, str, "unsigned char to string conversion");
+}
+
+//----------------------------------------------------------------------
+// Unsigned Short source tests
+//----------------------------------------------------------------------
+
+void TestUnsignedShortToTypes() {
+    // Test converting from unsigned short to various types
+    unsigned short sourceValue = 65000; // Value greater than short max (32767)
+    xnode value;
+    value.set_as(sourceValue);
+    
+    // Verify stored type
+    Assert(value.is<unsigned short>(), "Value should be stored as unsigned short");
+    
+    // Test conversion to bool
+    LogConversion("unsigned short", "bool");
+    Assert(value.get_as<bool>() == true, "unsigned short to bool conversion");
+    
+    // Test with zero
+    value.set_as((unsigned short)0);
+    LogConversion("unsigned short(0)", "bool");
+    Assert(value.get_as<bool>() == false, "unsigned short(0) to bool conversion");
+    
+    // Reset to original value
+    value.set_as(sourceValue);
+    
+    // Test conversion to numeric types
+    LogConversion("unsigned short", "int");
+    Assert(value.get_as<int>() == 65000, "unsigned short to int conversion");
+    
+    LogConversion("unsigned short", "float");
+    Assert(value.get_as<float>() == 65000.0f, "unsigned short to float conversion");
+    
+    LogConversion("unsigned short", "double");
+    Assert(value.get_as<double>() == 65000.0, "unsigned short to double conversion");
+    
+    LogConversion("unsigned short", "short");
+    // This will likely overflow on most platforms as 65000 > 32767
+    Assert(value.get_as<short>() == (short)65000, "unsigned short to short conversion (may overflow)");
+    
+    LogConversion("unsigned short", "long");
+    Assert(value.get_as<long>() == 65000L, "unsigned short to long conversion");
+    
+    LogConversion("unsigned short", "long long");
+    Assert(value.get_as<long long>() == 65000LL, "unsigned short to long long conversion");
+    
+    // Test conversion to unsigned types
+    LogConversion("unsigned short", "unsigned int");
+    Assert(value.get_as<unsigned int>() == 65000U, "unsigned short to unsigned int conversion");
+    
+    LogConversion("unsigned short", "unsigned short");
+    Assert(value.get_as<unsigned short>() == 65000, "unsigned short to unsigned short conversion");
+    
+    // Test conversion to string
+    LogConversion("unsigned short", "string");
+    Assert(value.get_as<std::string>() == "65000", "unsigned short to string conversion");
 }
 
 //----------------------------------------------------------------------
@@ -538,6 +794,57 @@ void TestNegativeLongToTypes() {
 }
 
 //----------------------------------------------------------------------
+// Unsigned Long source tests
+//----------------------------------------------------------------------
+
+void TestUnsignedLongToTypes() {
+    // Test converting from unsigned long to various types
+    unsigned long sourceValue = 4294967295UL;  // 2^32 - 1, max value for 32-bit unsigned int
+    xnode value;
+    value.set_as(sourceValue);
+    
+    // Verify stored type
+    Assert(value.is<unsigned long>(), "Value should be stored as unsigned long");
+    
+    // Test conversion to bool
+    LogConversion("unsigned long", "bool");
+    Assert(value.get_as<bool>() == true, "unsigned long to bool conversion");
+    
+    // Test with zero
+    value.set_as(0UL);
+    LogConversion("unsigned long(0)", "bool");
+    Assert(value.get_as<bool>() == false, "unsigned long(0) to bool conversion");
+    
+    // Reset to original value
+    value.set_as(sourceValue);
+    
+    // Test conversion to numeric types
+    LogConversion("unsigned long", "float");
+    Assert(abs(value.get_as<float>() - 4294967295.0f) < 1024.0f, "unsigned long to float conversion");
+    
+    LogConversion("unsigned long", "double");
+    Assert(abs(value.get_as<double>() - 4294967295.0) < 1.0, "unsigned long to double conversion");
+    
+    // Test conversion to long
+    LogConversion("unsigned long", "long");
+    Assert(value.get_as<long>() == (long)4294967295UL, "unsigned long to long conversion");
+    
+    LogConversion("unsigned long", "long long");
+    Assert(value.get_as<long long>() == 4294967295LL, "unsigned long to long long conversion");
+    
+    // Test conversion to unsigned types
+    LogConversion("unsigned long", "unsigned long");
+    Assert(value.get_as<unsigned long>() == 4294967295UL, "unsigned long to unsigned long conversion");
+    
+    LogConversion("unsigned long", "unsigned long long");
+    Assert(value.get_as<unsigned long long>() == 4294967295ULL, "unsigned long to unsigned long long conversion");
+    
+    // Test conversion to string
+    LogConversion("unsigned long", "string");
+    Assert(value.get_as<std::string>() == "4294967295", "unsigned long to string conversion");
+}
+
+//----------------------------------------------------------------------
 // Long Long source tests
 //----------------------------------------------------------------------
 
@@ -622,6 +929,49 @@ void TestNegativeLongLongToTypes() {
     // Test conversion to string
     LogConversion("long long(-)", "string");
     Assert(value.get_as<std::string>() == "-1234567890123", "negative long long to string conversion");
+}
+
+//----------------------------------------------------------------------
+// Unsigned Long Long source tests
+//----------------------------------------------------------------------
+
+void TestUnsignedLongLongToTypes() {
+    // Test converting from unsigned long long to various types
+    unsigned long long sourceValue = 18446744073709551615ULL;  // 2^64 - 1, max value for unsigned long long
+    xnode value;
+    value.set_as(sourceValue);
+    
+    // Verify stored type
+    Assert(value.is<unsigned long long>(), "Value should be stored as unsigned long long");
+    
+    // Test conversion to bool
+    LogConversion("unsigned long long", "bool");
+    Assert(value.get_as<bool>() == true, "unsigned long long to bool conversion");
+    
+    // Test with zero
+    value.set_as(0ULL);
+    LogConversion("unsigned long long(0)", "bool");
+    Assert(value.get_as<bool>() == false, "unsigned long long(0) to bool conversion");
+    
+    // Reset to a more manageable value for testing
+    sourceValue = 12345678901234ULL;
+    value.set_as(sourceValue);
+    
+    // Test conversion to numeric types
+    LogConversion("unsigned long long", "double");
+    Assert(abs(value.get_as<double>() - 12345678901234.0) < 1.0, "unsigned long long to double conversion");
+    
+    // Test conversion to long long
+    LogConversion("unsigned long long", "long long");
+    Assert(value.get_as<long long>() == 12345678901234LL, "unsigned long long to long long conversion");
+    
+    // Test conversion to unsigned types
+    LogConversion("unsigned long long", "unsigned long long");
+    Assert(value.get_as<unsigned long long>() == 12345678901234ULL, "unsigned long long to unsigned long long conversion");
+    
+    // Test conversion to string
+    LogConversion("unsigned long long", "string");
+    Assert(value.get_as<std::string>() == "12345678901234", "unsigned long long to string conversion");
 }
 
 //----------------------------------------------------------------------
@@ -765,6 +1115,142 @@ void TestLongDoubleConversions() {
 }
 
 //----------------------------------------------------------------------
+// Special floating point values tests
+//----------------------------------------------------------------------
+
+void TestSpecialFloatingValues() {
+    // Test converting special float values (NaN, Infinity)
+    
+    // NaN tests with float
+    float nanValue = std::numeric_limits<float>::quiet_NaN();
+    xnode value;
+    value.set_as(nanValue);
+    
+    // Verify stored type
+    Assert(value.is<float>(), "NaN value should be stored as float");
+    
+    xnode temp;
+    // Test conversion to bool
+    LogConversion("float(NaN)", "bool");
+    AssertThrows(readAsFunc<bool, xnode>(value, temp), "NaN float to bool conversion");
+    
+    // Test conversion to numeric types
+    LogConversion("float(NaN)", "float");
+    Assert(std::isnan(value.get_as<float>()), "NaN float to float conversion");
+    
+    LogConversion("float(NaN)", "double");
+    Assert(std::isnan(value.get_as<double>()), "NaN float to double conversion");
+    
+    // Test conversion to string
+    LogConversion("float(NaN)", "string");
+    std::string nanStr = value.get_as<std::string>();
+    Assert(nanStr == "nan" || nanStr == "NaN" || nanStr == "NAN", "NaN float to string conversion");
+    
+    // Infinity tests with float
+    float infinityValue = std::numeric_limits<float>::infinity();
+    value.set_as(infinityValue);
+    
+    // Verify stored type
+    Assert(value.is<float>(), "Infinity value should be stored as float");
+    
+    // Test conversion to bool
+    LogConversion("float(Inf)", "bool");
+    Assert(value.get_as<bool>() == true, "Infinity float to bool conversion");
+    
+    // Test conversion to numeric types
+    LogConversion("float(Inf)", "float");
+    Assert(std::isinf(value.get_as<float>()), "Infinity float to float conversion");
+    
+    LogConversion("float(Inf)", "double");
+    Assert(std::isinf(value.get_as<double>()), "Infinity float to double conversion");
+    
+    // Test conversion to string
+    LogConversion("float(Inf)", "string");
+    std::string infStr = value.get_as<std::string>();
+    Assert(infStr == "inf" || infStr == "Inf" || infStr == "INF" || 
+           infStr == "infinity" || infStr == "Infinity" || infStr == "INFINITY", 
+           "Infinity float to string conversion");
+    
+    // Negative Infinity tests with double
+    double negInfValue = -std::numeric_limits<double>::infinity();
+    value.set_as(negInfValue);
+    
+    // Verify stored type
+    Assert(value.is<double>(), "Negative Infinity value should be stored as double");
+    
+    // Test conversion to bool
+    LogConversion("double(-Inf)", "bool");
+    Assert(value.get_as<bool>() == true, "Negative Infinity double to bool conversion");
+    
+    // Test conversion to numeric types
+    LogConversion("double(-Inf)", "float");
+    Assert(std::isinf(value.get_as<float>()) && value.get_as<float>() < 0, "Negative Infinity double to float conversion");
+    
+    LogConversion("double(-Inf)", "double");
+    Assert(std::isinf(value.get_as<double>()) && value.get_as<double>() < 0, "Negative Infinity double to double conversion");
+    
+    // Test conversion to string
+    LogConversion("double(-Inf)", "string");
+    std::string negInfStr = value.get_as<std::string>();
+    Assert(negInfStr == "-inf" || negInfStr == "-Inf" || negInfStr == "-INF" || 
+           negInfStr == "-infinity" || negInfStr == "-Infinity" || negInfStr == "-INFINITY", 
+           "Negative Infinity double to string conversion");
+}
+
+//----------------------------------------------------------------------
+// String with negative value tests
+//----------------------------------------------------------------------
+
+void TestStringWithNegativeValues() {
+    // Test converting from string containing negative values to various types
+    std::string sourceValue = "-123";
+    xnode value;
+    value.set_as(sourceValue);
+    
+    // Verify stored type
+    Assert(value.is<std::string>(), "Value should be stored as string");
+    
+    // Test conversion to numeric types
+    LogConversion("string(-)", "int");
+    Assert(value.get_as<int>() == -123, "negative string to int conversion");
+    
+    LogConversion("string(-)", "float");
+    Assert(value.get_as<float>() == -123.0f, "negative string to float conversion");
+    
+    LogConversion("string(-)", "double");
+    Assert(value.get_as<double>() == -123.0, "negative string to double conversion");
+    
+    LogConversion("string(-)", "long");
+    Assert(value.get_as<long>() == -123L, "negative string to long conversion");
+    
+    LogConversion("string(-)", "long long");
+    Assert(value.get_as<long long>() == -123LL, "negative string to long long conversion");
+    
+    // Test with negative decimal string
+    value.set_as(std::string("-123.456"));
+    LogConversion("string(-decimal)", "float");
+    Assert(abs(value.get_as<float>() - (-123.456f)) < 0.001f, "negative decimal string to float conversion");
+    
+    LogConversion("string(-decimal)", "double");
+    Assert(abs(value.get_as<double>() - (-123.456)) < 0.001, "negative decimal string to double conversion");
+    
+    // Test conversion to string
+    LogConversion("string(-)", "string");
+    Assert(value.get_as<std::string>() == "-123.456", "negative string to string conversion");
+    
+    // Test with extreme values in string
+    value.set_as(std::string("-9223372036854775807")); // Near min value for 64-bit signed integer
+    LogConversion("string(min_long_long)", "long long");
+    Assert(value.get_as<long long>() == -9223372036854775807LL, "min long long string to long long conversion");
+    
+    // Test with extreme decimal value
+    value.set_as(std::string("-1.7976931348623157e+308")); // Near min value for double
+    LogConversion("string(min_double)", "double");
+    double result = value.get_as<double>();
+    Assert(result < -1.0e308, "min double string to double conversion");
+}
+
+//----------------------------------------------------------------------
 // Main test function
 //----------------------------------------------------------------------
 
@@ -774,16 +1260,25 @@ int xnode_convert_test() {
     TEST_FUNC(BoolToTypes);
     TEST_FUNC(IntToTypes);
     TEST_FUNC(NegativeIntToTypes);
+    TEST_FUNC(ShortToTypes);
     TEST_FUNC(FloatToTypes);
+    TEST_FUNC(NegativeFloatToTypes);
     TEST_FUNC(DoubleToTypes);
+    TEST_FUNC(NegativeDoubleToTypes);
     TEST_FUNC(CharToTypes);
+    TEST_FUNC(UnsignedCharToTypes);
+    TEST_FUNC(UnsignedShortToTypes);
     TEST_FUNC(UnsignedIntToTypes);
     TEST_FUNC(LongToTypes);
     TEST_FUNC(NegativeLongToTypes);
+    TEST_FUNC(UnsignedLongToTypes);
     TEST_FUNC(LongLongToTypes);
     TEST_FUNC(NegativeLongLongToTypes);
+    TEST_FUNC(UnsignedLongLongToTypes);
     TEST_FUNC(StringToTypes);
+    TEST_FUNC(StringWithNegativeValues);
     TEST_FUNC(LongDoubleConversions);
+    TEST_FUNC(SpecialFloatingValues);
     
     TEST_EPILOG();
 }

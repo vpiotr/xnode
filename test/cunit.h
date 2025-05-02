@@ -12,6 +12,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <sstream>
 
 /// \file cunit.h
 /// Unit testing utility functions
@@ -45,6 +46,27 @@ inline void AssertTrue(bool assertion, const char *message = NULL) {
 
 inline void AssertTrue(bool assertion, const std::string &message) {
     Assert(assertion, message);
+}
+
+template <typename T, typename U>
+inline void AssertEquals(T expected, U actual, const std::string &message) {
+    if (!(expected == actual)) {
+        std::ostringstream oss;
+        oss << "assertion equals failed: [" << message << "] expected: [" << expected << "] actual: [" << actual << "]";
+        throw std::runtime_error(oss.str());
+    }
+}
+
+template <typename T, typename U>
+inline void AssertEquals(T expected, U actual, const char *message = NULL) {
+    if (!(expected == actual)) {
+        std::ostringstream oss;
+        oss << "assertion equals failed: ";
+        if (message != NULL)
+            oss << "[" << message << "] ";
+        oss << "expected: [" << expected << "] actual: [" << actual << "]";
+        throw std::runtime_error(oss.str());
+    }
 }
 
 template <typename Func>

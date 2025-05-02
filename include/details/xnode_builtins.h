@@ -11,6 +11,7 @@
 #define __XNODE_BUILTINS_H__
 
 #include <string>
+#include <cmath>
 #include "xnode_type_ext.h"
 
 /// \file xnode_builtins.h
@@ -2204,11 +2205,21 @@ public:
                 break;
             }
             case xnode_type_code<float>::value: {
-                output = static_cast<ValueType>(xnode_get_scalar<float>(storage) != 0.0f);
+                float value = xnode_get_scalar<float>(storage);
+                if (!std::isnan(value)) {
+                    output = static_cast<ValueType>(value != 0.0f);
+                } else {
+                    result = false;
+                }
                 break;
             }
             case xnode_type_code<double>::value: {
-                output = static_cast<ValueType>(xnode_get_scalar<double>(storage) != 0.0);
+                double value = xnode_get_scalar<double>(storage);
+                if (!std::isnan(value)) {
+                    output = static_cast<ValueType>(value != 0.0);
+                } else {
+                    result = false;
+                }
                 break;
             }
             // -- signed integers --
