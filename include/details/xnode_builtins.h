@@ -124,6 +124,15 @@ struct xnode_bool_to_str<true> {
 	}
 };
 
+template<typename T>
+static bool extract_char_from_string(T &output, const std::string &str) {
+    if (str.empty() || str.size() > 1) {
+        return false;
+    }
+    output = static_cast<T>(str[0]);
+    return true;
+}
+            
 
 template<>
 class xnode_caster<std::string, xnode_def_cast_policy> : xnode_caster_base {
@@ -694,7 +703,8 @@ public:
         }
         // -- rest --
         case xnode_type_code<std::string>::value: {
-            result = from_string<ValueType>(output, *xnode_get_ptr<std::string>(storage));
+            auto str = *xnode_get_ptr<std::string>(storage);
+            result = extract_char_from_string(output, str);
             break;
         }
         case xnode_type_code<xnode_null_value>::value: {
@@ -1475,7 +1485,8 @@ public:
         }
         // -- rest --
         case xnode_type_code<std::string>::value: {
-            result = from_string<ValueType>(output, *xnode_get_ptr<std::string>(storage));
+            auto str = *xnode_get_ptr<std::string>(storage);
+            result = extract_char_from_string(output, str);
             break;
         }
         case xnode_type_code<xnode_null_value>::value: {

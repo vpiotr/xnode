@@ -82,9 +82,9 @@ inline void AssertThrows(Func assertion, const char *message = NULL)
 
 	if (!throwFound) {
 		if (message != NULL)
-			throw std::runtime_error(std::string("assertion.throws = [") + std::string(message) + "]");
+			throw std::runtime_error(std::string("assertion.throws didn't throw = [") + std::string(message) + "]");
 		else
-			throw std::runtime_error("assertion.throws failed");
+			throw std::runtime_error("assertion.throws didn't throw");
 	}
 }
 

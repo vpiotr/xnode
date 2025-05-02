@@ -12,6 +12,10 @@
 #include <unordered_map>
 #include <vector>
 #include <set>
+#include <string>
+#include <stdexcept>
+
+#include "xnode_utils.h"
 
 /// key-value pair container where key is unique
 /// container supports reading in insert order
