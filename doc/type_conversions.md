@@ -47,14 +47,16 @@ The table below shows the supported conversions between types. Each cell indicat
 
 - **Between numeric types**: Standard C++ casting rules apply
 - **Overflow behavior**: 
-  - When converting to smaller types, overflow may occur (e.g., `unsigned short` with value `65000` to `short`)
-  - No runtime checks for overflow conditions
+  - When converting between numeric types directly, overflow may occur with no runtime checks
+  - When converting from string to numeric types, overflow and underflow conditions are detected and will throw exceptions:
+    - `std::overflow_error` if the string represents a value too large for the target type
+    - `std::underflow_error` if trying to convert a negative string value to an unsigned type
 
 ### String Conversions
 
 - **To String**: All types can be converted to strings using string representations
 - **From String**:
-  - Numeric types: Parsed using string stream (`std::istringstream`)
+  - Numeric types: Parsed with overflow/underflow detection, will throw appropriate exceptions
   - Boolean: `"true"` or `"1"` converts to `true`, other values to `false`
 
 ### Special Floating Point Values
@@ -99,3 +101,4 @@ bool canConvert = value.is_convertable_to<int>();  // true
 // Get with default value (no exceptions if conversion fails)
 int safe = value.get_as_def<int>(0);  // 123 (or 0 if conversion fails)
 ```
+````

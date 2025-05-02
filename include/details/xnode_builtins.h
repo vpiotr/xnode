@@ -228,7 +228,8 @@ TargetType ranged_cast(SourceType value)
         {
             in_range = value <= std::numeric_limits<TargetType>::max() && value >= 0;
         }
-    } else if (value < std::numeric_limits<TargetType>::lowest() || value > std::numeric_limits<TargetType>::max())
+    }
+    else if (value < std::numeric_limits<TargetType>::lowest() || value > std::numeric_limits<TargetType>::max())
     {
         in_range = false;
     }
@@ -239,6 +240,335 @@ TargetType ranged_cast(SourceType value)
     }
 
     return static_cast<TargetType>(value);
+}
+
+template <typename T>
+bool cast_string_to_number(T &output, const std::string &input)
+{
+    // Default implementation for most numeric types
+    return from_string<T>(output, input);
+}
+
+// Specialization for float with overflow checking
+template <>
+bool cast_string_to_number<float>(float &output, const std::string &input)
+{
+    if (input.find_first_not_of("-0123456789.eE") != std::string::npos)
+    {
+        return from_string<float>(output, input);
+    }
+
+    try
+    {
+        size_t pos = 0;
+        double intermediate = std::stod(input, &pos);
+        if (std::abs(intermediate) > std::numeric_limits<float>::max())
+        {
+            throw std::overflow_error("Numeric overflow when converting string to float");
+        }
+        if (pos != input.length())
+        {
+            throw std::runtime_error("Invalid format for float conversion");
+        }
+    }
+    catch (const std::out_of_range &)
+    {
+        throw std::overflow_error("Numeric overflow when converting string to float");
+    }
+    catch (const std::invalid_argument &)
+    {
+        // Let the from_string function handle invalid format
+    }
+
+    return from_string<float>(output, input);
+}
+
+// Specialization for double with overflow checking
+template <>
+bool cast_string_to_number<double>(double &output, const std::string &input)
+{
+    if (input.find_first_not_of("-0123456789.eE") != std::string::npos)
+    {
+        return from_string<double>(output, input);
+    }
+
+    try
+    {
+        size_t pos = 0;
+        std::stod(input, &pos);
+        if (pos != input.length())
+        {
+            throw std::runtime_error("Invalid format for double conversion");
+        }
+    }
+    catch (const std::out_of_range &)
+    {
+        throw std::overflow_error("Numeric overflow when converting string to double");
+    }
+    catch (const std::invalid_argument &)
+    {
+        // Let the from_string function handle invalid format
+    }
+
+    return from_string<double>(output, input);
+}
+
+// Specialization for int with range checking
+template <>
+bool cast_string_to_number<int>(int &output, const std::string &input)
+{
+    if (input.find_first_not_of("-0123456789") != std::string::npos)
+    {
+        return from_string<int>(output, input);
+    }
+
+    try
+    {
+        size_t pos = 0;
+        long long intermediate = std::stoll(input, &pos);
+        if (intermediate > std::numeric_limits<int>::max() ||
+            intermediate < std::numeric_limits<int>::min())
+        {
+            throw std::overflow_error("Numeric overflow when converting string to int");
+        }
+    }
+    catch (const std::out_of_range &)
+    {
+        throw std::overflow_error("Numeric overflow when converting string to int");
+    }
+    catch (const std::invalid_argument &)
+    {
+        // Let the from_string function handle invalid format
+    }
+
+    return from_string<int>(output, input);
+}
+
+// Specialization for long with range checking
+template <>
+bool cast_string_to_number<long>(long &output, const std::string &input)
+{
+    if (input.find_first_not_of("-0123456789") != std::string::npos)
+    {
+        return from_string<long>(output, input);
+    }
+
+    try
+    {
+        size_t pos = 0;
+        long long intermediate = std::stoll(input, &pos);
+        if (sizeof(long) < sizeof(long long))
+        {
+            if (intermediate > static_cast<long long>(std::numeric_limits<long>::max()) ||
+                intermediate < static_cast<long long>(std::numeric_limits<long>::min()))
+            {
+                throw std::overflow_error("Numeric overflow when converting string to long");
+            }
+        }
+    }
+    catch (const std::out_of_range &)
+    {
+        throw std::overflow_error("Numeric overflow when converting string to long");
+    }
+    catch (const std::invalid_argument &)
+    {
+        // Let the from_string function handle invalid format
+    }
+
+    return from_string<long>(output, input);
+}
+
+// Specialization for long long with range validation
+template <>
+bool cast_string_to_number<long long>(long long &output, const std::string &input)
+{
+    return from_string<long long>(output, input);
+}
+
+// Specialization for short with range checking
+template <>
+bool cast_string_to_number<short>(short &output, const std::string &input)
+{
+    if (input.find_first_not_of("-0123456789") != std::string::npos)
+    {
+        return from_string<short>(output, input);
+    }
+
+    try
+    {
+        size_t pos = 0;
+        long long intermediate = std::stoll(input, &pos);
+        if (intermediate > std::numeric_limits<short>::max() ||
+            intermediate < std::numeric_limits<short>::min())
+        {
+            throw std::overflow_error("Numeric overflow when converting string to short");
+        }
+    }
+    catch (const std::out_of_range &)
+    {
+        throw std::overflow_error("Numeric overflow when converting string to short");
+    }
+    catch (const std::invalid_argument &)
+    {
+        // Let the from_string function handle invalid format
+    }
+
+    return from_string<short>(output, input);
+}
+
+// Specialization for unsigned int with range checking and negative value detection
+template <>
+bool cast_string_to_number<unsigned int>(unsigned int &output, const std::string &input)
+{
+    if (input.find('-') != std::string::npos)
+    {
+        throw std::underflow_error("Cannot convert negative value to unsigned int");
+    }
+
+    if (input.find_first_not_of("0123456789") != std::string::npos)
+    {
+        return from_string<unsigned int>(output, input);
+    }
+
+    try
+    {
+        size_t pos = 0;
+        unsigned long long intermediate = std::stoull(input, &pos);
+        if (intermediate > std::numeric_limits<unsigned int>::max())
+        {
+            throw std::overflow_error("Numeric overflow when converting string to unsigned int");
+        }
+    }
+    catch (const std::out_of_range &)
+    {
+        throw std::overflow_error("Numeric overflow when converting string to unsigned int");
+    }
+    catch (const std::invalid_argument &)
+    {
+        // Let the from_string function handle invalid format
+    }
+
+    return from_string<unsigned int>(output, input);
+}
+
+// Specialization for unsigned long with range checking and negative value detection
+template <>
+bool cast_string_to_number<unsigned long>(unsigned long &output, const std::string &input)
+{
+    if (input.find('-') != std::string::npos)
+    {
+        throw std::underflow_error("Cannot convert negative value to unsigned long");
+    }
+
+    if (input.find_first_not_of("0123456789") != std::string::npos)
+    {
+        return from_string<unsigned long>(output, input);
+    }
+
+    try
+    {
+        size_t pos = 0;
+        unsigned long long intermediate = std::stoull(input, &pos);
+        if (sizeof(unsigned long) < sizeof(unsigned long long) &&
+            intermediate > std::numeric_limits<unsigned long>::max())
+        {
+            throw std::overflow_error("Numeric overflow when converting string to unsigned long");
+        }
+    }
+    catch (const std::out_of_range &)
+    {
+        throw std::overflow_error("Numeric overflow when converting string to unsigned long");
+    }
+    catch (const std::invalid_argument &)
+    {
+        // Let the from_string function handle invalid format
+    }
+
+    return from_string<unsigned long>(output, input);
+}
+
+// Specialization for unsigned short with range checking and negative value detection
+template <>
+bool cast_string_to_number<unsigned short>(unsigned short &output, const std::string &input)
+{
+    if (input.find('-') != std::string::npos)
+    {
+        throw std::underflow_error("Cannot convert negative value to unsigned short");
+    }
+
+    if (input.find_first_not_of("0123456789") != std::string::npos)
+    {
+        return from_string<unsigned short>(output, input);
+    }
+
+    try
+    {
+        size_t pos = 0;
+        unsigned long long intermediate = std::stoull(input, &pos);
+        if (intermediate > std::numeric_limits<unsigned short>::max())
+        {
+            throw std::overflow_error("Numeric overflow when converting string to unsigned short");
+        }
+    }
+    catch (const std::out_of_range &)
+    {
+        throw std::overflow_error("Numeric overflow when converting string to unsigned short");
+    }
+    catch (const std::invalid_argument &)
+    {
+        // Let the from_string function handle invalid format
+    }
+
+    return from_string<unsigned short>(output, input);
+}
+
+// Specialization for unsigned long long with range checking and negative value detection
+template <>
+bool cast_string_to_number<unsigned long long>(unsigned long long &output, const std::string &input)
+{
+    if (input.find('-') != std::string::npos)
+    {
+        throw std::underflow_error("Cannot convert negative value to unsigned long long");
+    }
+
+    if (input.find_first_not_of("0123456789") != std::string::npos)
+    {
+        return from_string<unsigned long long>(output, input);
+    }
+
+    try
+    {
+        size_t pos = 0;
+        std::stoull(input, &pos);
+        if (pos != input.length())
+        {
+            throw std::runtime_error("Invalid format for unsigned long long conversion");
+        }
+    }
+    catch (const std::out_of_range &)
+    {
+        throw std::overflow_error("Numeric overflow when converting string to unsigned long long");
+    }
+    catch (const std::invalid_argument &)
+    {
+        // Let the from_string function handle invalid format
+    }
+
+    return from_string<unsigned long long>(output, input);
+}
+
+// Specialization for char that extracts a single character from string
+template <>
+bool cast_string_to_number<char>(char &output, const std::string &input)
+{
+    return extract_char_from_string(output, input);
+}
+
+// Specialization for unsigned char that extracts a single character from string
+template <>
+bool cast_string_to_number<unsigned char>(unsigned char &output, const std::string &input)
+{
+    return extract_char_from_string(output, input);
 }
 
 template <>
@@ -558,31 +888,7 @@ public:
         case xnode_type_code<std::string>::value:
         {
             std::string inputStr = *xnode_get_ptr<std::string>(storage);
-            try
-            {
-                // Check for potential overflow
-                if (inputStr.find_first_not_of("-0123456789.eE") == std::string::npos)
-                {
-                    size_t pos = 0;
-                    try
-                    {
-                        double intermediate = std::stod(inputStr, &pos);
-                        if (std::abs(intermediate) > std::numeric_limits<float>::max())
-                        {
-                            throw std::overflow_error("Numeric overflow when converting string to float");
-                        }
-                    }
-                    catch (const std::out_of_range &)
-                    {
-                        throw std::overflow_error("Numeric overflow when converting string to float");
-                    }
-                }
-                result = from_string<ValueType>(output, *xnode_get_ptr<std::string>(storage));
-            }
-            catch (const std::exception &e)
-            {
-                throw std::runtime_error(std::string("Error converting string to float: ") + e.what());
-            }
+            result = cast_string_to_number<ValueType>(output, inputStr);
             break;
         }
         case xnode_type_code<xnode_null_value>::value:
@@ -776,36 +1082,7 @@ public:
         case xnode_type_code<std::string>::value:
         {
             std::string inputStr = *xnode_get_ptr<std::string>(storage);
-            try
-            {
-                // Check for potential overflow/underflow in string conversion to double
-                if (inputStr.find_first_not_of("-0123456789.eE") == std::string::npos)
-                {
-                    try
-                    {
-                        // Check if the string can be properly parsed without overflow
-                        size_t pos = 0;
-                        std::stod(inputStr, &pos);
-                        if (pos != inputStr.length())
-                        {
-                            throw std::runtime_error("Invalid format for double conversion");
-                        }
-                    }
-                    catch (const std::out_of_range &)
-                    {
-                        throw std::overflow_error("Numeric overflow when converting string to double");
-                    }
-                    catch (const std::invalid_argument &)
-                    {
-                        throw std::runtime_error("Invalid format for double conversion");
-                    }
-                }
-                result = from_string<ValueType>(output, inputStr);
-            }
-            catch (const std::exception &e)
-            {
-                throw std::runtime_error(std::string("Error converting string to double: ") + e.what());
-            }
+            result = cast_string_to_number<ValueType>(output, inputStr);
             break;
         }
         case xnode_type_code<xnode_null_value>::value:
@@ -1193,7 +1470,8 @@ public:
         // -- rest --
         case xnode_type_code<std::string>::value:
         {
-            result = from_string<ValueType>(output, *xnode_get_ptr<std::string>(storage));
+            auto inputStr = *xnode_get_ptr<std::string>(storage);
+            result = cast_string_to_number<ValueType>(output, inputStr);
             break;
         }
         case xnode_type_code<xnode_null_value>::value:
@@ -1387,36 +1665,7 @@ public:
         case xnode_type_code<std::string>::value:
         {
             std::string inputStr = *xnode_get_ptr<std::string>(storage);
-            try
-            {
-                // Check for potential overflow/underflow
-                if (inputStr.find_first_not_of("-0123456789") == std::string::npos)
-                {
-                    try
-                    {
-                        size_t pos = 0;
-                        long long intermediate = std::stoll(inputStr, &pos);
-                        if (intermediate > std::numeric_limits<int>::max() ||
-                            intermediate < std::numeric_limits<int>::min())
-                        {
-                            throw std::overflow_error("Numeric overflow when converting string to int");
-                        }
-                    }
-                    catch (const std::out_of_range &)
-                    {
-                        throw std::overflow_error("Numeric overflow when converting string to int");
-                    }
-                    catch (const std::invalid_argument &)
-                    {
-                        // Let the from_string function handle invalid format
-                    }
-                }
-                result = from_string<ValueType>(output, inputStr);
-            }
-            catch (const std::exception &e)
-            {
-                throw std::runtime_error(std::string("Error converting string to int: ") + e.what());
-            }
+            result = cast_string_to_number<ValueType>(output, inputStr);
             break;
         }
         case xnode_type_code<xnode_null_value>::value:
@@ -1609,39 +1858,7 @@ public:
         case xnode_type_code<std::string>::value:
         {
             std::string inputStr = *xnode_get_ptr<std::string>(storage);
-            try
-            {
-                // Check for potential overflow/underflow
-                if (inputStr.find_first_not_of("-0123456789") == std::string::npos)
-                {
-                    try
-                    {
-                        size_t pos = 0;
-                        long long intermediate = std::stoll(inputStr, &pos);
-                        if (sizeof(long) < sizeof(long long))
-                        {
-                            if (intermediate > static_cast<long long>(std::numeric_limits<long>::max()) ||
-                                intermediate < static_cast<long long>(std::numeric_limits<long>::min()))
-                            {
-                                throw std::overflow_error("Numeric overflow when converting string to long");
-                            }
-                        }
-                    }
-                    catch (const std::out_of_range &)
-                    {
-                        throw std::overflow_error("Numeric overflow when converting string to long");
-                    }
-                    catch (const std::invalid_argument &)
-                    {
-                        // Let the from_string function handle invalid format
-                    }
-                }
-                result = from_string<ValueType>(output, inputStr);
-            }
-            catch (const std::exception &e)
-            {
-                throw std::runtime_error(std::string("Error converting string to long: ") + e.what());
-            }
+            result = cast_string_to_number<ValueType>(output, inputStr);
             break;
         }
         case xnode_type_code<xnode_null_value>::value:
@@ -1833,7 +2050,8 @@ public:
         }
         case xnode_type_code<std::string>::value:
         {
-            result = from_string<ValueType>(output, *xnode_get_ptr<std::string>(storage));
+            std::string inputStr = *xnode_get_ptr<std::string>(storage);
+            result = cast_string_to_number<ValueType>(output, inputStr);
             break;
         }
         case xnode_type_code<xnode_null_value>::value:
@@ -2224,40 +2442,7 @@ public:
         case xnode_type_code<std::string>::value:
         {
             std::string inputStr = *xnode_get_ptr<std::string>(storage);
-            try
-            {
-                // Check for potential overflow/underflow
-                if (inputStr.find_first_not_of("0123456789") == std::string::npos)
-                {
-                    try
-                    {
-                        size_t pos = 0;
-                        unsigned long long intermediate = std::stoull(inputStr, &pos);
-                        if (intermediate > std::numeric_limits<ValueType>::max())
-                        {
-                            throw std::overflow_error("Numeric overflow when converting string to unsigned int");
-                        }
-                    }
-                    catch (const std::out_of_range &)
-                    {
-                        throw std::overflow_error("Numeric overflow when converting string to unsigned int");
-                    }
-                    catch (const std::invalid_argument &)
-                    {
-                        // Let the from_string function handle invalid format
-                    }
-                }
-                else if (inputStr.find('-') != std::string::npos)
-                {
-                    // Check for negative value which would cause underflow
-                    throw std::underflow_error("Cannot convert negative value to unsigned int");
-                }
-                result = from_string<ValueType>(output, inputStr);
-            }
-            catch (const std::exception &e)
-            {
-                throw std::runtime_error(std::string("Error converting string to unsigned int: ") + e.what());
-            }
+            result = cast_string_to_number<ValueType>(output, inputStr);
             break;
         }
         case xnode_type_code<xnode_null_value>::value:
@@ -2451,40 +2636,7 @@ public:
         case xnode_type_code<std::string>::value:
         {
             std::string inputStr = *xnode_get_ptr<std::string>(storage);
-            try
-            {
-                // Check for potential overflow/underflow
-                if (inputStr.find_first_not_of("0123456789") == std::string::npos)
-                {
-                    try
-                    {
-                        size_t pos = 0;
-                        unsigned long long intermediate = std::stoull(inputStr, &pos);
-                        if (intermediate > std::numeric_limits<ValueType>::max())
-                        {
-                            throw std::overflow_error("Numeric overflow when converting string to unsigned int");
-                        }
-                    }
-                    catch (const std::out_of_range &)
-                    {
-                        throw std::overflow_error("Numeric overflow when converting string to unsigned int");
-                    }
-                    catch (const std::invalid_argument &)
-                    {
-                        // Let the from_string function handle invalid format
-                    }
-                }
-                else if (inputStr.find('-') != std::string::npos)
-                {
-                    // Check for negative value which would cause underflow
-                    throw std::underflow_error("Cannot convert negative value to unsigned int");
-                }
-                result = from_string<ValueType>(output, inputStr);
-            }
-            catch (const std::exception &e)
-            {
-                throw std::runtime_error(std::string("Error converting string to unsigned int: ") + e.what());
-            }
+            result = cast_string_to_number<ValueType>(output, inputStr);
             break;
         }
         case xnode_type_code<xnode_null_value>::value:
@@ -2677,41 +2829,7 @@ public:
         case xnode_type_code<std::string>::value:
         {
             std::string inputStr = *xnode_get_ptr<std::string>(storage);
-            try
-            {
-                // Check for potential overflow/underflow
-                if (inputStr.find_first_not_of("0123456789") == std::string::npos)
-                {
-                    try
-                    {
-                        size_t pos = 0;
-                        unsigned long long intermediate = std::stoull(inputStr, &pos);
-                        if (sizeof(unsigned long) < sizeof(unsigned long long) &&
-                            intermediate > std::numeric_limits<unsigned long>::max())
-                        {
-                            throw std::overflow_error("Numeric overflow when converting string to unsigned long");
-                        }
-                    }
-                    catch (const std::out_of_range &)
-                    {
-                        throw std::overflow_error("Numeric overflow when converting string to unsigned long");
-                    }
-                    catch (const std::invalid_argument &)
-                    {
-                        // Let the from_string function handle invalid format
-                    }
-                }
-                else if (inputStr.find('-') != std::string::npos)
-                {
-                    // Check for negative value which would cause underflow
-                    throw std::underflow_error("Cannot convert negative value to unsigned long");
-                }
-                result = from_string<ValueType>(output, inputStr);
-            }
-            catch (const std::exception &e)
-            {
-                throw std::runtime_error(std::string("Error converting string to unsigned long: ") + e.what());
-            }
+            result = cast_string_to_number<ValueType>(output, inputStr);
             break;
         }
         case xnode_type_code<xnode_null_value>::value:
@@ -2904,42 +3022,7 @@ public:
         case xnode_type_code<std::string>::value:
         {
             std::string inputStr = *xnode_get_ptr<std::string>(storage);
-            try
-            {
-                // Check for potential overflow/underflow
-                if (inputStr.find_first_not_of("0123456789") == std::string::npos)
-                {
-                    // Can't check for overflow on unsigned long long directly since it's the largest type
-                    // But we can check for invalid format and make sure no negative signs
-                    try
-                    {
-                        size_t pos = 0;
-                        std::stoull(inputStr, &pos);
-                        if (pos != inputStr.length())
-                        {
-                            throw std::runtime_error("Invalid format for unsigned long long conversion");
-                        }
-                    }
-                    catch (const std::out_of_range &)
-                    {
-                        throw std::overflow_error("Numeric overflow when converting string to unsigned long long");
-                    }
-                    catch (const std::invalid_argument &)
-                    {
-                        // Let the from_string function handle invalid format
-                    }
-                }
-                else if (inputStr.find('-') != std::string::npos)
-                {
-                    // Check for negative value which would cause underflow
-                    throw std::underflow_error("Cannot convert negative value to unsigned long long");
-                }
-                result = from_string<ValueType>(output, inputStr);
-            }
-            catch (const std::exception &e)
-            {
-                throw std::runtime_error(std::string("Error converting string to unsigned long long: ") + e.what());
-            }
+            result = cast_string_to_number<ValueType>(output, inputStr);
             break;
         }
         case xnode_type_code<xnode_null_value>::value:
