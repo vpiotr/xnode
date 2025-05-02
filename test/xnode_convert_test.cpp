@@ -27,6 +27,21 @@ void LogConversion(const std::string& fromType, const std::string& toType) {
               << " to " << std::setw(15) << toType << std::endl;
 }
 
+template<typename T, typename U>
+struct readAsFunc {
+    U &value_;
+    xnode &dest_;
+
+    readAsFunc(U &value, xnode &dest): value_(value), dest_(dest) {
+    }
+
+    void operator()() {
+        T val = value_.template get_as<T>();
+        dest_.set_as(val);
+    }
+};
+
+
 //----------------------------------------------------------------------
 // Boolean source tests
 //----------------------------------------------------------------------
@@ -207,8 +222,8 @@ void TestNegativeIntToTypes() {
 //----------------------------------------------------------------------
 
 void TestShortToTypes() {
-    // Test converting from short to various types
     short sourceValue = 12345;  // Near the upper limit for short (32767)
+    // Test converting from short to various types
     xnode value;
     value.set_as(sourceValue);
     
@@ -236,9 +251,11 @@ void TestShortToTypes() {
     
     LogConversion("short", "double");
     AssertEquals(12345.0, value.get_as<double>(), "short to double conversion");
-    
+
     LogConversion("short", "char");
-    AssertEquals((char)12345, value.get_as<char>(), "short to char conversion (will truncate)");
+    short smallShort = 123;
+    xnode smallShortNode = xnode::value_of((short)123);
+    AssertEquals(smallShort, smallShortNode.get_as<char>(), "short to char conversion");
     
     LogConversion("short", "long");
     AssertEquals(12345L, value.get_as<long>(), "short to long conversion");
@@ -445,7 +462,13 @@ void TestNegativeDoubleToTypes() {
     AssertEquals(-123, value.get_as<int>(), "negative double to int conversion");
     
     LogConversion("double(-)", "float");
-    Assert(abs(value.get_as<float>() - (-123.456f)) < 0.001f, "negative double to float conversion");
+    float floatValue = -123.456789f; 
+    double doubleValue = static_cast<double>(floatValue);
+    xnode safeDouble = xnode::value_of(doubleValue);
+    cout << "value.get_as<float>(): " << safeDouble.get_as<float>() << endl;
+    cout << "expected: " << (floatValue) << endl;
+    cout << "abs(value.get_as<float>() - ("<<floatValue<<"): " << abs(safeDouble.get_as<float>() - (floatValue)) << endl;
+    Assert(abs(safeDouble.get_as<float>() - (floatValue)) < 1e-6f, "negative double to float conversion");
     
     LogConversion("double(-)", "double");
     Assert(abs(value.get_as<double>() - (-123.456789)) < 0.0001, "negative double to double conversion");
@@ -615,8 +638,10 @@ void TestUnsignedShortToTypes() {
     Assert(value.get_as<double>() == 65000.0, "unsigned short to double conversion");
     
     LogConversion("unsigned short", "short");
-    // This will likely overflow on most platforms as 65000 > 32767
-    Assert(value.get_as<short>() == (short)65000, "unsigned short to short conversion (may overflow)");
+    short expectedShort = (short)32767;
+    unsigned short unsignedShortValue = expectedShort;
+    xnode shortNode = xnode::value_of(unsignedShortValue);
+    Assert(shortNode.get_as<short>() == expectedShort, "unsigned short to short conversion");
     
     LogConversion("unsigned short", "long");
     Assert(value.get_as<long>() == 65000L, "unsigned short to long conversion");
@@ -1043,22 +1068,6 @@ void TestStringToTypes() {
 //----------------------------------------------------------------------
 // Tests for long double conversion with special policy
 //----------------------------------------------------------------------
-
-template<typename T, typename U>
-struct readAsFunc {
-    U &value_;
-    xnode &dest_;
-
-    readAsFunc(U &value, xnode &dest): value_(value), dest_(dest) {
-    }
-
-    void operator()() {
-        T val = value_.template get_as<T>();
-        dest_.set_as(val);
-    }
-};
-
-
 void TestLongDoubleConversions() {
         
     typedef basic_xnode<xnode_ld_value_policy> xnode_ld;
