@@ -6,13 +6,6 @@
 // License:     BSD
 //----------------------------------------------------------------------------------
 
-// Disable warnings from template instantiations in header files
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#pragma GCC diagnostic ignored "-Wnonnull"
-#endif
-
 #include "xnode.h"
 #include "xarray.h"
 #include <iostream>
@@ -31,11 +24,6 @@
 
 #include "cunit.h"
 #include "xobject.h"
-
-// Restore warnings after includes
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
 
 using namespace std;
 

@@ -71,17 +71,13 @@ struct xn_is_pointer { static const bool value = false; };
 template<typename T>
 struct xn_is_pointer<T*> { static const bool value = true; };
 
-// from SO, red Jun 30 '11 at 14:17, iammilind
-namespace XN_CHECK_EQUALS  // namespace to let "operator ==" not become global
+namespace XN_CHECK_EQUALS  
 {
-	typedef char no[7];
-	template<typename T> no& operator == (const T&, const T&);
+	template <typename T, typename = void>
+	struct opEqualExists : std::false_type {};
 
 	template <typename T>
-	struct opEqualExists // *(T*)(0) can be replaced by *new T[1] also
-	{
-		enum { value = (sizeof(*(T*)(0) == *(T*)(0)) != sizeof(no)) };
-	};
+	struct opEqualExists<T, decltype(void(std::declval<T>() == std::declval<T>()))> : std::true_type {};
 }
 
 namespace XN_CHECK_LESS
@@ -121,7 +117,7 @@ template<class T>
 typename xnEnableIf<
 	xnSelector<
 	!has_equals_operator<T>::value>, bool>::type
-	xn_equals(const T& lhs, const T& rhs)
+	xn_equals(const T& /* lhs */, const T& /* rhs */)
 {
 	throw std::runtime_error(std::string("Equals not implemented, type: ") + typeid(T).name());
 }
@@ -141,7 +137,7 @@ template<class T>
 typename xnEnableIf<
 	xnSelector<
 	!has_less_operator<T>::value>, bool>::type
-	xn_less(const T& lhs, const T& rhs)
+	xn_less(const T& /* lhs */, const T& /* rhs */)
 {
 	throw std::runtime_error(std::string("Less operator not implemented, type: ") + typeid(T).name());
 }

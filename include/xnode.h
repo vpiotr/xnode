@@ -110,7 +110,7 @@ template <typename T>
 class xnode_deleter<T, xstNull>
 {
 public:
-	static void destroy(void *ptr)
+	static void destroy(void * /* ptr */)
 	{
 		// empty
 	}
@@ -125,7 +125,7 @@ template <typename T>
 class xnode_deleter<T, xstPointer>
 {
 public:
-	static void destroy(void *ptr)
+	static void destroy(void * /* ptr */)
 	{
 		// empty
 	}
@@ -140,7 +140,7 @@ template <typename T>
 class xnode_deleter<T, xstCasted>
 {
 public:
-	static void destroy(void *ptr)
+	static void destroy(void * /* ptr */)
 	{
 		// empty
 	}
@@ -176,7 +176,7 @@ public:
 	}
 
 	// copy value to already existing object using assign operator
-	static void copy(void *dest, const void *src)
+	static void copy(void * /* dest */, const void * /* src */)
 	{
 		// empty
 	}
@@ -203,7 +203,7 @@ public:
 	}
 
 	// copy from another node using assign operator, assume old value holds pointer to existing object
-	static void copy_from_node(void *dest, const void *src)
+	static void copy_from_node(void * /* dest */, const void * /* src */)
 	{
 		// empty
 	}
@@ -218,12 +218,12 @@ public:
 		return false;
 	}
 
-	static void copy(void *dest, const void *src)
+	static void copy(void * /* dest */, const void * /* src */)
 	{
 		// empty
 	}
 
-	static void assign_from_value(void **dest, const void *src)
+	static void assign_from_value(void **dest, const void * /* src */)
 	{
 		*dest = nullptr;
 	}
@@ -239,7 +239,7 @@ public:
 		*dest = const_cast<void *>(src);
 	}
 
-	static void copy_from_node(void *dest, const void *src)
+	static void copy_from_node(void * /* dest */, const void * /* src */)
 	{
 		// empty
 	}
@@ -255,7 +255,7 @@ public:
 	}
 
 	// copy value
-	static void copy(void *dest, const void *src)
+	static void copy(void * /* dest */, const void * /* src */)
 	{
 		// empty
 	}
@@ -280,7 +280,7 @@ public:
 		*dest = const_cast<void *>(src);
 	}
 
-	static void copy_from_node(void *dest, const void *src)
+	static void copy_from_node(void * /* dest */, const void * /* src */)
 	{
 		// empty
 	}
@@ -296,7 +296,7 @@ public:
 	}
 
 	// copy value
-	static void copy(void *dest, const void *src)
+	static void copy(void * /* dest */, const void * /* src */)
 	{
 		// empty
 	}
@@ -318,7 +318,7 @@ public:
 		*dest = const_cast<void *>(src);
 	}
 
-	static void copy_from_node(void *dest, const void *src)
+	static void copy_from_node(void * /* dest */, const void * /* src */)
 	{
 		// empty
 	}
@@ -397,12 +397,12 @@ public:
 	}
 
 	// returns pointer to stored value
-	static void *value_ptr(void **src)
+	static void *value_ptr(void ** /* src */)
 	{
 		return nullptr;
 	}
 
-	static void read_value(void *dest, void **src)
+	static void read_value(void * /* dest */, void ** /* src */)
 	{
 		// empty
 	}

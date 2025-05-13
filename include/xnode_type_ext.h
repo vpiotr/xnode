@@ -60,11 +60,11 @@ template<typename ValueType, typename CastPolicy>
 class xnode_caster {
 public:
 
-	static bool cast_to_value(ValueType &output, void *storage, int srcTypeCode) {
+	static bool cast_to_value(ValueType & /* output */, void * /* storage */, int /* srcTypeCode */) {
 		return false;
 	}
 
-	static bool cast_from_value(void **storage, int destTypeCode, const ValueType &value) {
+	static bool cast_from_value(void ** /* storage */, int /* destTypeCode */, const ValueType & /* value */) {
 		return false;
 	}
 };

@@ -215,7 +215,7 @@ public:
 	/// return keys in order of insertion
     /// param[in] helper, buffer optionally to be used
     /// return reference to key storage
-	const key_list_type &get_keys(key_list_type &helper) {
+	const key_list_type &get_keys(key_list_type &/* helper */) {
 		if (dirty_keys_)
 			purge_keys();
 		return keys_;

@@ -36,8 +36,6 @@ public:
     typedef double ValueType;
 
     static bool cast_to_value(ValueType &output, void **storage, int srcTypeCode) {
-        bool result = true;
-
         // Special handling for long double
         if (srcTypeCode == xnode_type_code<long double>::value) {
             long double value;
