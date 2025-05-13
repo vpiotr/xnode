@@ -249,7 +249,7 @@ void TestHoldObj() {
 		int b;
 	};
 
-	std::auto_ptr<TestStr> holder(new TestStr());
+	std::unique_ptr<TestStr> holder(new TestStr());
 	holder->a = 12;
 	holder->b = 21;
 
@@ -265,7 +265,7 @@ void TestHoldObj() {
 
 void TestHoldInt() {
 
-	std::auto_ptr<int> holder(new int);
+	std::unique_ptr<int> holder(new int);
 	*holder = 12;
 
 	xnode value;
@@ -356,7 +356,7 @@ void TestDynamicCastVptr() {
         virtual int getValue() { return 111; }
     };
 
-    std::auto_ptr<MyNode> value(new MyNode());
+    std::unique_ptr<MyNode> value(new MyNode());
 
     xnode wrap;
     wrap.hold(value.release());

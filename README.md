@@ -71,7 +71,7 @@ Support for dynamic typing in C++.
 				int b;
 			};
 		
-			std::auto_ptr<TestStr> holder(new TestStr());
+			std::unique_ptr<TestStr> holder(new TestStr());
 			holder->a = 12;
 			holder->b = 21;
 		

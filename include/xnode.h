@@ -191,7 +191,7 @@ public:
 	// accepts pointer to value, takes ownership of it
 	static void hold_ptr(void **dest, void *src)
 	{
-		std::auto_ptr<T> holder(static_cast<T *>(src));
+		std::unique_ptr<T> holder(static_cast<T *>(src));
 		*dest = reinterpret_cast<void *>(*holder);
 	}
 
@@ -230,7 +230,7 @@ public:
 
 	static void hold_ptr(void **dest, void *src)
 	{
-		std::auto_ptr<T> holder(static_cast<T *>(src));
+		std::unique_ptr<T> holder(static_cast<T *>(src));
 		*dest = nullptr;
 	}
 
@@ -269,7 +269,7 @@ public:
 
 	static void hold_ptr(void **dest, void *src)
 	{
-		std::auto_ptr<T> holder(static_cast<T *>(src));
+		std::unique_ptr<T> holder(static_cast<T *>(src));
 		T *dptr = reinterpret_cast<T *>(dest);
 		*dptr = *holder;
 	}
@@ -309,7 +309,7 @@ public:
 
 	static void hold_ptr(void **dest, void *src)
 	{
-		std::auto_ptr<T> holder(static_cast<T *>(src));
+		std::unique_ptr<T> holder(static_cast<T *>(src));
 		*dest = const_cast<void *>(reinterpret_cast<const void *>(*holder));
 	}
 
@@ -921,7 +921,7 @@ public:
 	template <typename T>
 	T *release()
 	{
-		std::auto_ptr<T> result;
+		std::unique_ptr<T> result;
 
 		if (vtable_->deleter_ != nullptr)
 		{
@@ -941,7 +941,7 @@ public:
 	template <typename T>
 	void hold(T *value)
 	{
-		std::auto_ptr<T> holder(value);
+		std::unique_ptr<T> holder(value);
 		destroy();
 		vtable_ = xnode_get_vtable<T>();
 		vtable_->hold_(&value_, holder.release());
