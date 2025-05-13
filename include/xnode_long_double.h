@@ -16,7 +16,7 @@
 // Define a specific type code for long double to distinguish it
 template<>
 struct xnode_type_code<long double> {
-    enum { value = 15 }; // Ensure this doesn't conflict with other type codes
+    enum { value = 17 }; // Ensure this doesn't conflict with other type codes
 };
 
 struct xnode_ld_cast_policy {

@@ -25,8 +25,15 @@ target_link_libraries(xnode_overflow_test PRIVATE xnode)
 # Add overflow test to CTest
 add_test(NAME xnode_overflow_test COMMAND xnode_overflow_test)
 
+# Add xarray tests
+add_executable(xarray_test xarray_test.cpp)
+target_link_libraries(xarray_test PRIVATE xnode)
+
+# Add xvector test to CTest
+add_test(NAME xarray_test COMMAND xarray_test)
+
 # Install the test executable if needed (optional)
-install(TARGETS xnode_test xnode_convert_test xnode_type_test xnode_overflow_test
+install(TARGETS xnode_test xnode_convert_test xnode_type_test xnode_overflow_test xarray_test
     RUNTIME DESTINATION bin
     OPTIONAL
 )

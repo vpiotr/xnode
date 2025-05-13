@@ -13,8 +13,7 @@
 #include <iomanip>
 
 #include "cunit.h"
-#include "xnode_vector.h"
-#include "xnode_property_list.h"
+#include "xarray.h"
 #include "xnode_long_double.h"
 #include <limits>
 #include <cmath>

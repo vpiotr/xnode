@@ -33,7 +33,7 @@ Support for dynamic typing in C++.
 		Assert(value.type() == typeid(int));
 
 		value.set_as(false);
-		Assert(value.is<bool>())));
+		Assert(value.is<bool>());
 
 * perform on-fly transparent conversion & type checking
 
@@ -51,7 +51,7 @@ Support for dynamic typing in C++.
 		std::string printInFont(const xnode &font, const std::string &text) {
 			std::ostringstream out;
 	
-			const xnode_named_list &list = font.get_ref<xnode_named_list>();
+			const xobject &list = font.get_ref<xobject>();
 	
 			out << "text in font [";
 			out << "color:" << list.get_def("color", xnode::value_of(0x00ff00)).get_as<int>();

@@ -14,8 +14,7 @@
 #include <stdexcept>
 
 #include "cunit.h"
-#include "xnode_vector.h"
-#include "xnode_property_list.h"
+#include "xarray.h"
 
 using namespace std;
 

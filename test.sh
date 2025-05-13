@@ -1,5 +1,4 @@
-rm -f build/*
-rmdir -p build
+rm -r build
 
 # Configure
 cmake -B build
