@@ -20,25 +20,27 @@
 
 using namespace std;
 
-template<typename T>
-xnode mysum(xnode x, xnode y) {
-	xnode result;
-	T value = x.get_as<T>() + y.get_as<T>();
-	result.set_as(value);
-	return result;
-}
-
 void TestArraySum() {
+	// Reserve capacity upfront to avoid reallocations
 	xarray v;
+	v.reserve(5);
+	
+	// Add elements to the array (using initializer list would be nicer if supported)
 	v.push_back(xnode::value_of(1));
 	v.push_back(xnode::value_of(8));
 	v.push_back(xnode::value_of(2));
 	v.push_back(xnode::value_of<long>(3));
 	v.push_back(xnode::value_of<long>(4));
 
-	xnode sum = std::accumulate(v.begin(), v.end(), xnode::value_of(0), mysum<int>);
-	int isum = sum.get_as<int>();
-	Assert(isum == 18);
+	// Sum as integers using std::accumulate with a lambda that extracts int values
+	int intSum = std::accumulate(v.begin(), v.end(), 0, 
+		[](int acc, const xnode& x) { return acc + x.get_as<int>(); });
+	Assert(intSum == 18);
+	
+	// Sum as longs using std::accumulate with a lambda that extracts long values
+	long longSum = std::accumulate(v.begin(), v.end(), 0L,
+		[](long acc, const xnode& x) { return acc + x.get_as<long>(); });
+	Assert(longSum == 18L);
 }
 
 void TestArraySort() {
