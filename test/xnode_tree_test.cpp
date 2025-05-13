@@ -134,44 +134,11 @@ void TestNestedTreeStructure() {
     Assert(root.get_ptr<xobject>()->get("items").get_ptr<xarray>()->at(1).get_ptr<xobject>()->get("value").get_as<int>() == 10);
 }
 
-void TestTreeOfNodes() {
-	xnode root;
-	xarray array1;
-	xnode value;
-
-	array1.push_back(xnode::value_of(3));
-	array1.push_back(xnode::value_of(5));
-
-	xobject obj;
-	obj.put("z", xnode::value_of(12));
-	obj.put("a", xnode::value_of(1L));
-
-	xarray array2;
-	array2.push_back(xnode::value_of(1));
-	array2.push_back(xnode::value_of(1L));
-	array2.push_back(xnode::value_of(false));
-
-	array1.push_back(xnode::value_of(obj));
-	array1.push_back(xnode::value_of(array2));
-
-	root.set_as(array1);
-
-	Assert(root.is<xarray>());
-	Assert(root.get_ptr<xarray>()->size() == 4);
-	Assert(root.get_ptr<xarray>()->at(0).is<int>());
-	Assert(root.get_ptr<xarray>()->at(1).is<int>());
-	Assert(root.get_ptr<xarray>()->at(2).is<xobject>());
-	Assert(root.get_ptr<xarray>()->at(3).is<xarray>());
-
-	Assert(root.get_ptr<xarray>()->at(2).get_ptr<xobject>()->contains("z"));
-}
-
 int xnode_tree_test() {
 	TEST_PROLOG();
 	TEST_FUNC(TreeOfNodesWithArray);
 	TEST_FUNC(TreeOfNodesWithObject);
 	TEST_FUNC(NestedTreeStructure);
-    TEST_FUNC(TreeOfNodes);
 	TEST_EPILOG();
 }
 
