@@ -6,11 +6,24 @@
 // License:     BSD
 //----------------------------------------------------------------------------------
 
+// Disable warnings from template instantiations in header files
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wnonnull"
+#endif
+
 #include "xnode.h"
 #include <iostream>
 #include "cunit.h"
 #include <limits>
 #include <cmath>
+
+// Restore warnings after includes
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 using namespace std;
 
@@ -272,14 +285,14 @@ void TestLongType() {
 void TestLongLongType() {
     // Test scenario 1
     xnode node;
-    long long testValue = 1234567890123456789LL;
+    long long testValue = std::numeric_limits<long long>::max();
     node.set_as<long long>(testValue);
     
     AssertTrue(node.is<long long>(), "is<long long>() should return true");
     AssertEquals(testValue, node.get_as<long long>(), "get_as<long long>() should return the test value");
     
     // Test with negative value
-    long long negValue = -9876543210987654321LL;
+    long long negValue = std::numeric_limits<long long>::min();
     node.set_as<long long>(negValue);
     
     AssertTrue(node.is<long long>(), "is<long long>() should return true for negative value");
