@@ -498,7 +498,7 @@ void TestLongDoubleCastWithPolicySet() {
 }
 
 void TestWrongCastThrows() {
-    void *vptr = NULL;
+    void *vptr = nullptr;
     xnode value = xnode::value_of(vptr);
 
     AssertFalse(value.is_null(), "is_null");
@@ -508,7 +508,7 @@ void TestWrongCastThrows() {
 }
 
 void TestSafeCastNoThrow() {
-    void *vptr = NULL;
+    void *vptr = nullptr;
     xnode value = xnode::value_of(vptr);
 
     AssertFalse(value.is_null(), "is_null");

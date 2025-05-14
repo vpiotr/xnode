@@ -17,10 +17,10 @@
 /// \file cunit.h
 /// Unit testing utility functions
 
-inline void Assert(bool assertion, const char *message = NULL)
+inline void Assert(bool assertion, const char *message = nullptr)
 {
 	if (!assertion) {
-		if (message != NULL)
+		if (message != nullptr)
 			throw std::runtime_error(std::string("assertion = [") + std::string(message) + "]");
 		else
 			throw std::runtime_error("assertion failed");
@@ -32,7 +32,7 @@ inline void Assert(bool assertion, const std::string &message)
 	Assert(assertion, message.c_str());
 }
 
-inline void AssertFalse(bool assertion, const char *message = NULL) {
+inline void AssertFalse(bool assertion, const char *message = nullptr) {
     Assert(!assertion, message);
 }
 
@@ -40,7 +40,7 @@ inline void AssertFalse(bool assertion, const std::string &message) {
     Assert(!assertion, message);
 }
 
-inline void AssertTrue(bool assertion, const char *message = NULL) {
+inline void AssertTrue(bool assertion, const char *message = nullptr) {
     Assert(assertion, message);
 }
 
@@ -58,11 +58,11 @@ inline void AssertEquals(T expected, U actual, const std::string &message) {
 }
 
 template <typename T, typename U>
-inline void AssertEquals(T expected, U actual, const char *message = NULL) {
+inline void AssertEquals(T expected, U actual, const char *message = nullptr) {
     if (!(expected == actual)) {
         std::ostringstream oss;
         oss << "assertion equals failed: ";
-        if (message != NULL)
+        if (message != nullptr)
             oss << "[" << message << "] ";
         oss << "expected: [" << expected << "] actual: [" << actual << "]";
         throw std::runtime_error(oss.str());
@@ -70,7 +70,7 @@ inline void AssertEquals(T expected, U actual, const char *message = NULL) {
 }
 
 template <typename Func>
-inline void AssertThrows(Func assertion, const char *message = NULL)
+inline void AssertThrows(Func assertion, const char *message = nullptr)
 {
 	bool throwFound = false;
 	try {
@@ -81,7 +81,7 @@ inline void AssertThrows(Func assertion, const char *message = NULL)
 	}
 
 	if (!throwFound) {
-		if (message != NULL)
+		if (message != nullptr)
 			throw std::runtime_error(std::string("assertion.throws didn't throw = [") + std::string(message) + "]");
 		else
 			throw std::runtime_error("assertion.throws didn't throw");
@@ -89,7 +89,7 @@ inline void AssertThrows(Func assertion, const char *message = NULL)
 }
 
 template <typename Func>
-inline void AssertNoThrow(Func assertion, const char *message = NULL)
+inline void AssertNoThrow(Func assertion, const char *message = nullptr)
 {
 	bool throwFound = false;
 	try {
@@ -100,7 +100,7 @@ inline void AssertNoThrow(Func assertion, const char *message = NULL)
 	}
 
 	if (throwFound) {
-		if (message != NULL)
+		if (message != nullptr)
 			throw std::runtime_error(std::string("assertion.throws = [") + std::string(message) + "]");
 		else
 			throw std::runtime_error("assertion.throws failed");
@@ -108,7 +108,7 @@ inline void AssertNoThrow(Func assertion, const char *message = NULL)
 }
 
 template <typename ObjectType, typename Func>
-void AssertThrowsMethod(ObjectType obj, Func func, const char *message = NULL)
+void AssertThrowsMethod(ObjectType obj, Func func, const char *message = nullptr)
 {
 	bool throwFound = false;
 	try {
@@ -119,7 +119,7 @@ void AssertThrowsMethod(ObjectType obj, Func func, const char *message = NULL)
 	}
 
 	if (!throwFound) {
-		if (message != NULL)
+		if (message != nullptr)
 			throw std::runtime_error(std::string("assertion.throws = [") + std::string(message) + "]");
 		else
 			throw std::runtime_error("assertion.throws failed");
