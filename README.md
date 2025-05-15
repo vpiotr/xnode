@@ -10,68 +10,58 @@ BSD
 https://github.com/vpiotr/xnode
 
 # Purpose
-Support for dynamic typing in C++.
+Bringing the power and flexibility of dynamic typing to modern C++, allowing you to write more expressive and adaptable code.
 
-# Features
-* dynamically typed values
-* type checking
-* type conversion
-* STL compatibility
-* header-only library
-* template based design
-* extensible for custom type conversions
-* property lists and vector containers for advanced data structures
-* no external dependencies beyond C++ STL
+# Key Features
+* **Zero-cost Abstractions**: Header-only with no external dependencies beyond STL
+* **Seamless Type Flexibility**: Change types at runtime with automatic conversion
+* **Modern C++ Design**: Template-based, STL-compatible architecture
+* **Rich Data Structures**: Property lists and vector containers with insertion-order preservation
+* **Extensible Type System**: Easily add support for your custom types
+* **Developer-Friendly API**: Intuitive interface with fluent builder methods
 
-# Benefits
-* dynamic typing
+# Why xnode?
+* **Simplify Dynamic Data Handling**
 
-		xnode value;
-        Assert(value.is_null()); 
-        
-		value.set_as(5);
-		Assert(value.type() == typeid(int));
+		xnode value;        
+		value.set_as(5);                 // Store as integer
+		value.set_as(false);             // Change to boolean
+		value.set_as("dynamic typing");  // Change to string
+		
+		// Type safety when you need it
+		Assert(value.is<std::string>());
 
-		value.set_as(false);
-		Assert(value.is<bool>());
+* **Smart Type Conversions** - Automatic, transparent, and safe
 
-* perform on-fly transparent conversion & type checking
-
-	    xnode ivalue;
-	    std::string s("123");
-
-		ivalue.set_as(s);
-		Assert(ivalue.is<std::string>());
-
-		cout << "int value: " << ivalue.get_as<int>() << endl;
-        Assert(ivalue.is_convertable_to<int>());
+	    xnode value;
+	    value.set_as("123");  // Store as string
+	    
+	    // Automatic conversion when needed
+	    int num = value.get_as<int>();  // Converts to 123
+	    
+	    // Type safety built-in
+	    Assert(value.is<std::string>());
+	    Assert(value.is_convertable_to<int>());
 	
-* handle optional named parameters without builder pattern
+* **Elegant Named Parameters** - Cleaner than builder pattern, more flexible than structs
 
 		std::string printInFont(const xnode &font, const std::string &text) {
+			const xobject &options = font.get_ref<xobject>();
+			
+			// Default values handled elegantly with get_def
 			std::ostringstream out;
-	
-			const xobject &list = font.get_ref<xobject>();
-	
 			out << "text in font [";
-			out << "color:" << list.get_def("color", xnode::value_of(0x00ff00)).get_as<int>();
-			out << ", font_name:" << list.get_def("font_name", xnode::value_of("courier")).get_as<std::string>();
-			out << ", size:" << list.get_def("size", xnode::value_of(10)).get_as<int>();
-			out << ", bold:" << list.get_def("bold", xnode::value_of(false)).get_as<bool>();
+			out << "color:" << options.get_def("color", xnode::value_of(0x00ff00)).get_as<int>();
+			out << ", font_name:" << options.get_def("font_name", xnode::value_of("courier")).get_as<std::string>();
+			out << ", size:" << options.get_def("size", xnode::value_of(10)).get_as<int>();
+			out << ", bold:" << options.get_def("bold", xnode::value_of(false)).get_as<bool>();
 			out << "] = " << text;
-	
-			return(out.str());  
+			
+			return out.str();  
 		}
 		
-		// Example using the traditional approach:
-		xobject font;
-		font.put("color", xnode::value_of(0xff0000));
-		font.put("font_name", xnode::value_of(std::string("arial")));
-		font.put("size", xnode::value_of(12));
-		printInFont(xnode::value_of(font), "Hello World!");
-		
-		// Example using the static 'of' method for cleaner code:
-		printInFont(
+		// Create options with fluent static 'of' method:
+		auto result = printInFont(
 			xnode::value_of(xobject::of(
 				"color", xnode::value_of(0xff0000),
 				"font_name", xnode::value_of(std::string("arial")),
@@ -80,70 +70,75 @@ Support for dynamic typing in C++.
 			)), 
 			"Hello World!"
 		);
-		
-		// The static 'of' method allows for more concise and readable code
-		// by creating an xobject with properties in a single expression.
 
-* acquire ownership of & auto-delete objects
+* **Smart Object Ownership** - Automatic memory management for dynamic objects
 
-		void TestHoldObj() {
-			struct TestStr {
-				int a;
-				int b;
+		// Let xnode handle object lifecycle
+		void useObjectOwnership() {
+			struct CustomObject {
+				int data1;
+				int data2;
 			};
 		
-			std::unique_ptr<TestStr> holder(new TestStr());
-			holder->a = 12;
-			holder->b = 21;
+			// Create an object to be owned by xnode
+			std::unique_ptr<CustomObject> obj(new CustomObject{42, 100});
 		
-			xnode value;
-			TestStr *ptr = holder.get();
-			value.hold(holder.release());
+			// Transfer ownership to xnode
+			xnode container;
+			container.hold(obj.release());
 		
-			Assert(value.get_ptr<TestStr>() == ptr);
-			Assert(value.get_ptr<TestStr>()->a == 12);
-			Assert(value.get_ptr<TestStr>()->b == 21);
-			Assert(value.is<TestStr>());
+			// Use the object safely
+			CustomObject* ptr = container.get_ptr<CustomObject>();
+			std::cout << "Values: " << ptr->data1 << ", " << ptr->data2 << std::endl;
+			
+			// Object is automatically deleted when container goes out of scope
 		}
 
-* store pointers (non-owned blocks of memory)
+* **Flexible Memory Models** - Store owned objects or reference existing memory
 
-		void TestReleaseNonOwned() {
-			xnode svalue;
-		
-			char test[] = "Test";
-			svalue.set_as(&test[0]);
-			Assert(svalue.release<char *>() == nullptr);
-		
-			svalue.set_as(5);
-			Assert(svalue.release<int>() == nullptr);
+		// Work with existing memory without ownership concerns
+		void workWithExistingData() {
+			// External data we want to reference
+			char existingData[] = "Hello xnode!";
+			
+			// Store a pointer without taking ownership
+			xnode reference;
+			reference.set_as(existingData);
+			
+			// Use the data through xnode
+			char* data = reference.get_as<char*>();
+			std::cout << data << std::endl; // Prints "Hello xnode!"
+			
+			// xnode won't attempt to free this memory
 		}
 
 
-# Conversion
-Example conversion matrix defined in xnode_builtins.h specify conversion between types:
+# Type Conversion System
 
-* bool
-* float, double
-* char, short, int, long, long long
-* unsigned: char, short, int, long, long long
-* std::string
+xnode comes with a rich set of built-in conversions for seamless interoperability:
 
-Conversion between types can be user-defined (see xnode_long_double.h & TestLongDoubleWithPolicy).
+* **Fundamental Types**: All C++ numeric types (integer and floating-point)
+* **Logical Values**: bool with smart conversion from/to other types
+* **Text Support**: Full std::string integration
+* **Custom Types**: Easily extend with your own conversion rules
+
+Create your own conversion paths by implementing a simple policy class (see `xnode_long_double.h` for a practical example).
 		
-# Supported environments
-* compiler: any compiler with C++11 support 
-* tested with:
-  * VS 2015 C++ compiler 
-  * GCC 4.8.1 (under MinGW)
-  * Recent compilers (GCC, Clang)
+# Compatibility
 
-# External dependencies
-* just C++ standard library, including std::string
-        
-# Other similar efforts
-* boost::any
-* boost::variant
+* **Standards**: C++11 and later
+* **Platforms**: Cross-platform (Windows, Linux, macOS)
+* **Compilers**: 
+  * Modern GCC/Clang toolchains
+  * Microsoft Visual Studio 2015+
+  * Any compiler with good C++11 support
+
+# Advantages Over Alternatives
+
+* **Lighter than Boost**: Self-contained with no external dependencies
+* **More Dynamic than std::any**: Built-in type conversion
+* **More Flexible than std::variant**: Change types at runtime
+* **More Modern than void\***: Type-safe with no casting required
 
 # Building
 xnode is a header-only library, so you can just include the headers in your project.
