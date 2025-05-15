@@ -43,6 +43,27 @@ Bringing the power and flexibility of dynamic typing to modern C++, allowing you
 	    Assert(value.is<std::string>());
 	    Assert(value.is_convertable_to<int>());
 	
+* **Flexible Container Types** - Including dynamic arrays with tuple-like functionality
+
+	    // Modern C++17 version with direct values
+	    #if __cplusplus >= 201703L
+	    xarray modern = xarray::of(42, "Direct values", 3.14, true);
+	    Assert(modern[0].get_as<int>() == 42);
+	    #endif
+
+		// Create a heterogeneous collection (like a tuple)
+	    xarray values = xarray::of(
+	        xnode::value_of(42),              // int
+	        xnode::value_of("Hello World"),   // string
+	        xnode::value_of(3.14),            // double
+	        xnode::value_of(true)             // bool
+	    );
+	    
+	    // Access elements type-safely
+	    int first = values[0].get_as<int>();            // 42
+	    std::string second = values[1].get_as<std::string>(); // "Hello World"	    
+	
+
 * **Elegant Named Parameters** - Cleaner than builder pattern, more flexible than structs
 
 		std::string printInFont(const xnode &font, const std::string &text) {
