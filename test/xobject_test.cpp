@@ -12,6 +12,8 @@
 #include <sstream>
 #include <numeric>
 #include <algorithm>  // for std::find, std::sort
+#include <limits>     // for std::numeric_limits
+#include <cmath>      // for std::isinf, std::isnan
 
 #include "cunit.h"
 
@@ -294,17 +296,17 @@ void TestStaticOfMethod() {
     Assert(keys[1] == "strKey", "Second key should be 'strKey'");
     Assert(keys[2] == "floatKey", "Third key should be 'floatKey'");
     
-    // Test with other value types
+    // Test with other value types including limits
     auto obj2 = xobject::of(
         "boolKey", xnode::value_of(true),
         "doubleKey", xnode::value_of(2.71828),
-        "longKey", xnode::value_of(9223372036854775807L) // max long
+        "longKey", xnode::value_of(std::numeric_limits<long>::max()) // max long
     );
     
     Assert(obj2.size() == 3, "Object should contain 3 items");
     Assert(obj2.get("boolKey").get_as<bool>() == true, "boolKey should have value true");
     Assert(obj2.get("doubleKey").get_as<double>() == 2.71828, "doubleKey should have value 2.71828");
-    Assert(obj2.get("longKey").get_as<long>() == 9223372036854775807L, "longKey should have correct value");
+    Assert(obj2.get("longKey").get_as<long>() == std::numeric_limits<long>::max(), "longKey should have correct value");
     
     // Test with empty string and zero values
     auto obj3 = xobject::of(
@@ -316,6 +318,48 @@ void TestStaticOfMethod() {
     Assert(obj3.get("emptyStr").get_as<std::string>() == "", "emptyStr should be empty");
     Assert(obj3.get("zero").get_as<int>() == 0, "zero should be 0");
     Assert(obj3.get("zeroF").get_as<float>() == 0.0f, "zeroF should be 0.0f");
+    
+    // Test with numeric limits for integer types
+    auto objIntLimits = xobject::of(
+        "int_max", xnode::value_of(std::numeric_limits<int>::max()),
+        "int_min", xnode::value_of(std::numeric_limits<int>::min()),
+        "uint_max", xnode::value_of(std::numeric_limits<unsigned int>::max())
+    );
+    
+    Assert(objIntLimits.get("int_max").get_as<int>() == std::numeric_limits<int>::max(), 
+           "int_max should have max integer value");
+    Assert(objIntLimits.get("int_min").get_as<int>() == std::numeric_limits<int>::min(), 
+           "int_min should have min integer value");
+    Assert(objIntLimits.get("uint_max").get_as<unsigned int>() == std::numeric_limits<unsigned int>::max(), 
+           "uint_max should have max unsigned integer value");
+    
+    // Test with numeric limits for floating point types
+    auto objFloatLimits = xobject::of(
+        "float_max", xnode::value_of(std::numeric_limits<float>::max()),
+        "float_min", xnode::value_of(std::numeric_limits<float>::min()),
+        "double_max", xnode::value_of(std::numeric_limits<double>::max())
+    );
+    
+    Assert(objFloatLimits.get("float_max").get_as<float>() == std::numeric_limits<float>::max(),
+           "float_max should have max float value");
+    Assert(objFloatLimits.get("float_min").get_as<float>() == std::numeric_limits<float>::min(),
+           "float_min should have min float value");
+    Assert(objFloatLimits.get("double_max").get_as<double>() == std::numeric_limits<double>::max(),
+           "double_max should have max double value");
+           
+    // Test with special values
+    auto objSpecial = xobject::of(
+        "inf", xnode::value_of(std::numeric_limits<double>::infinity()),
+        "nan", xnode::value_of(std::numeric_limits<double>::quiet_NaN()),
+        "epsilon", xnode::value_of(std::numeric_limits<double>::epsilon())
+    );
+    
+    Assert(std::isinf(objSpecial.get("inf").get_as<double>()), 
+           "inf should be recognized as infinity");
+    Assert(std::isnan(objSpecial.get("nan").get_as<double>()), 
+           "nan should be recognized as NaN");
+    Assert(objSpecial.get("epsilon").get_as<double>() == std::numeric_limits<double>::epsilon(),
+           "epsilon should have correct value");
 }
 
 int xobject_test() {
