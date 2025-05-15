@@ -28,6 +28,12 @@ class property_list {
 public:
 	typedef std::vector<KeyType> key_list_type;
     typedef property_list<KeyType, ValueType> this_type;
+    
+    // Iterator typedefs
+    typedef typename key_container_type::iterator key_iterator;
+    typedef typename key_container_type::const_iterator key_const_iterator;
+    typedef typename value_container_type::iterator value_iterator;
+    typedef typename value_container_type::const_iterator value_const_iterator;
 
 	property_list() : dirty_keys_(false) {}
 
@@ -231,15 +237,64 @@ public:
 		return result;
 	}
 
+    /// returns iterator to the beginning of keys container
+    key_iterator keys_begin() {
+        if (dirty_keys_)
+            purge_keys();
+        return keys_.begin();
+    }
+
+    /// returns iterator to the end of keys container
+    key_iterator keys_end() {
+        return keys_.end();
+    }
+
+    /// returns const_iterator to the beginning of keys container
+    key_const_iterator keys_cbegin() const {
+        if (dirty_keys_)
+            purge_keys();
+        return keys_.cbegin();
+    }
+
+    /// returns const_iterator to the end of keys container
+    key_const_iterator keys_cend() const {
+        return keys_.cend();
+    }
+
+    /// returns iterator to the beginning of values container
+    value_iterator values_begin() {
+        return values_.begin();
+    }
+
+    /// returns iterator to the end of values container
+    value_iterator values_end() {
+        return values_.end();
+    }
+
+    /// returns const_iterator to the beginning of values container
+    value_const_iterator values_cbegin() const {
+        return values_.cbegin();
+    }
+
+    /// returns const_iterator to the end of values container
+    value_const_iterator values_cend() const {
+        return values_.cend();
+    }
+
 protected:
-	void purge_keys() {
+	void purge_keys() const {
 		key_container_type new_keys;
-		for (KeyType key : keys_) {
+		for (const KeyType& key : keys_) {
 			if (values_.find(key) != values_.end())
 				new_keys.push_back(key);
 		}
-		keys_ = std::move(new_keys);
-		dirty_keys_ = false;
+		// Cast away const to update the member variables
+		// This is safe because we're maintaining logical constness
+		key_container_type& keys_nonconst = const_cast<key_container_type&>(keys_);
+		bool& dirty_keys_nonconst = const_cast<bool&>(dirty_keys_);
+		
+		keys_nonconst = std::move(new_keys);
+		dirty_keys_nonconst = false;
 	}
 
 	void throwNotFound(const KeyType &key) const {

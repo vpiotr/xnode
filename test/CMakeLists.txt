@@ -39,8 +39,15 @@ target_link_libraries(xobject_test PRIVATE xnode)
 # Add xobject test to CTest
 add_test(NAME xobject_test COMMAND xobject_test)
 
+# Add property_list tests
+add_executable(property_list_test property_list_test.cpp)
+target_link_libraries(property_list_test PRIVATE xnode)
+
+# Add property_list test to CTest
+add_test(NAME property_list_test COMMAND property_list_test)
+
 # Install the test executable if needed (optional)
-install(TARGETS xnode_test xnode_convert_test xnode_type_test xnode_overflow_test xarray_test xobject_test
+install(TARGETS xnode_test xnode_convert_test xnode_type_test xnode_overflow_test xarray_test xobject_test property_list_test
     RUNTIME DESTINATION bin
     OPTIONAL
 )
