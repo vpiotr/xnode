@@ -35,6 +35,157 @@ public:
     typedef typename value_container_type::iterator value_iterator;
     typedef typename value_container_type::const_iterator value_const_iterator;
 
+    // Static factory methods
+    static this_type of(const KeyType& k1, const ValueType& v1) {
+        this_type result;
+        result.put(k1, v1);
+        return result;
+    }
+
+    static this_type of(const KeyType& k1, const ValueType& v1, 
+                        const KeyType& k2, const ValueType& v2) {
+        this_type result;
+        result.put(k1, v1);
+        result.put(k2, v2);
+        return result;
+    }
+
+    static this_type of(const KeyType& k1, const ValueType& v1,
+                        const KeyType& k2, const ValueType& v2,
+                        const KeyType& k3, const ValueType& v3) {
+        this_type result;
+        result.put(k1, v1);
+        result.put(k2, v2);
+        result.put(k3, v3);
+        return result;
+    }
+
+    static this_type of(const KeyType& k1, const ValueType& v1,
+                        const KeyType& k2, const ValueType& v2,
+                        const KeyType& k3, const ValueType& v3,
+                        const KeyType& k4, const ValueType& v4) {
+        this_type result;
+        result.put(k1, v1);
+        result.put(k2, v2);
+        result.put(k3, v3);
+        result.put(k4, v4);
+        return result;
+    }
+
+    static this_type of(const KeyType& k1, const ValueType& v1,
+                        const KeyType& k2, const ValueType& v2,
+                        const KeyType& k3, const ValueType& v3,
+                        const KeyType& k4, const ValueType& v4,
+                        const KeyType& k5, const ValueType& v5) {
+        this_type result;
+        result.put(k1, v1);
+        result.put(k2, v2);
+        result.put(k3, v3);
+        result.put(k4, v4);
+        result.put(k5, v5);
+        return result;
+    }
+
+    static this_type of(const KeyType& k1, const ValueType& v1,
+                        const KeyType& k2, const ValueType& v2,
+                        const KeyType& k3, const ValueType& v3,
+                        const KeyType& k4, const ValueType& v4,
+                        const KeyType& k5, const ValueType& v5,
+                        const KeyType& k6, const ValueType& v6) {
+        this_type result;
+        result.put(k1, v1);
+        result.put(k2, v2);
+        result.put(k3, v3);
+        result.put(k4, v4);
+        result.put(k5, v5);
+        result.put(k6, v6);
+        return result;
+    }
+
+    static this_type of(const KeyType& k1, const ValueType& v1,
+                        const KeyType& k2, const ValueType& v2,
+                        const KeyType& k3, const ValueType& v3,
+                        const KeyType& k4, const ValueType& v4,
+                        const KeyType& k5, const ValueType& v5,
+                        const KeyType& k6, const ValueType& v6,
+                        const KeyType& k7, const ValueType& v7) {
+        this_type result;
+        result.put(k1, v1);
+        result.put(k2, v2);
+        result.put(k3, v3);
+        result.put(k4, v4);
+        result.put(k5, v5);
+        result.put(k6, v6);
+        result.put(k7, v7);
+        return result;
+    }
+
+    static this_type of(const KeyType& k1, const ValueType& v1,
+                        const KeyType& k2, const ValueType& v2,
+                        const KeyType& k3, const ValueType& v3,
+                        const KeyType& k4, const ValueType& v4,
+                        const KeyType& k5, const ValueType& v5,
+                        const KeyType& k6, const ValueType& v6,
+                        const KeyType& k7, const ValueType& v7,
+                        const KeyType& k8, const ValueType& v8) {
+        this_type result;
+        result.put(k1, v1);
+        result.put(k2, v2);
+        result.put(k3, v3);
+        result.put(k4, v4);
+        result.put(k5, v5);
+        result.put(k6, v6);
+        result.put(k7, v7);
+        result.put(k8, v8);
+        return result;
+    }
+
+    static this_type of(const KeyType& k1, const ValueType& v1,
+                        const KeyType& k2, const ValueType& v2,
+                        const KeyType& k3, const ValueType& v3,
+                        const KeyType& k4, const ValueType& v4,
+                        const KeyType& k5, const ValueType& v5,
+                        const KeyType& k6, const ValueType& v6,
+                        const KeyType& k7, const ValueType& v7,
+                        const KeyType& k8, const ValueType& v8,
+                        const KeyType& k9, const ValueType& v9) {
+        this_type result;
+        result.put(k1, v1);
+        result.put(k2, v2);
+        result.put(k3, v3);
+        result.put(k4, v4);
+        result.put(k5, v5);
+        result.put(k6, v6);
+        result.put(k7, v7);
+        result.put(k8, v8);
+        result.put(k9, v9);
+        return result;
+    }
+
+    static this_type of(const KeyType& k1, const ValueType& v1,
+                        const KeyType& k2, const ValueType& v2,
+                        const KeyType& k3, const ValueType& v3,
+                        const KeyType& k4, const ValueType& v4,
+                        const KeyType& k5, const ValueType& v5,
+                        const KeyType& k6, const ValueType& v6,
+                        const KeyType& k7, const ValueType& v7,
+                        const KeyType& k8, const ValueType& v8,
+                        const KeyType& k9, const ValueType& v9,
+                        const KeyType& k10, const ValueType& v10) {
+        this_type result;
+        result.put(k1, v1);
+        result.put(k2, v2);
+        result.put(k3, v3);
+        result.put(k4, v4);
+        result.put(k5, v5);
+        result.put(k6, v6);
+        result.put(k7, v7);
+        result.put(k8, v8);
+        result.put(k9, v9);
+        result.put(k10, v10);
+        return result;
+    }
+
 	property_list() : dirty_keys_(false) {}
 
     property_list(const property_list &src):

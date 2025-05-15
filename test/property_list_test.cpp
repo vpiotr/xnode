@@ -182,6 +182,84 @@ void TestKeyIteratorModification() {
     Assert(keys.size() == 2, "Should copy 2 keys to vector");
 }
 
+// Test static of() methods
+void TestStaticOfMethods() {
+    // Test of() with 1 pair
+    {
+        auto props = property_list<string, int>::of("one", 1);
+        Assert(props.size() == 1, "Should create list with 1 item");
+        Assert(props.get("one") == 1, "Should have correct value for key 'one'");
+    }
+    
+    // Test of() with 2 pairs
+    {
+        auto props = property_list<string, int>::of("one", 1, "two", 2);
+        Assert(props.size() == 2, "Should create list with 2 items");
+        Assert(props.get("one") == 1, "Should have correct value for key 'one'");
+        Assert(props.get("two") == 2, "Should have correct value for key 'two'");
+        
+        // Check insertion order
+        auto keys = props.get_keys();
+        Assert(keys[0] == "one", "First key should be 'one'");
+        Assert(keys[1] == "two", "Second key should be 'two'");
+    }
+    
+    // Test of() with 3 pairs
+    {
+        auto props = property_list<string, int>::of("one", 1, "two", 2, "three", 3);
+        Assert(props.size() == 3, "Should create list with 3 items");
+        Assert(props.get("one") == 1, "Should have correct value for key 'one'");
+        Assert(props.get("two") == 2, "Should have correct value for key 'two'");
+        Assert(props.get("three") == 3, "Should have correct value for key 'three'");
+        
+        // Check insertion order
+        auto keys = props.get_keys();
+        Assert(keys[0] == "one", "First key should be 'one'");
+        Assert(keys[1] == "two", "Second key should be 'two'");
+        Assert(keys[2] == "three", "Third key should be 'three'");
+    }
+    
+    // Test of() with 5 pairs
+    {
+        auto props = property_list<string, int>::of(
+            "one", 1, "two", 2, "three", 3, "four", 4, "five", 5
+        );
+        Assert(props.size() == 5, "Should create list with 5 items");
+        Assert(props.get("one") == 1, "Should have correct value for key 'one'");
+        Assert(props.get("five") == 5, "Should have correct value for key 'five'");
+        
+        // Check insertion order preserved
+        auto keys = props.get_keys();
+        Assert(keys[0] == "one", "First key should be 'one'");
+        Assert(keys[4] == "five", "Fifth key should be 'five'");
+    }
+    
+    // Test of() with 10 pairs
+    {
+        auto props = property_list<string, int>::of(
+            "one", 1, "two", 2, "three", 3, "four", 4, "five", 5,
+            "six", 6, "seven", 7, "eight", 8, "nine", 9, "ten", 10
+        );
+        Assert(props.size() == 10, "Should create list with 10 items");
+        Assert(props.get("one") == 1, "Should have correct value for key 'one'");
+        Assert(props.get("ten") == 10, "Should have correct value for key 'ten'");
+        
+        // Check insertion order preserved
+        auto keys = props.get_keys();
+        Assert(keys[0] == "one", "First key should be 'one'");
+        Assert(keys[9] == "ten", "Tenth key should be 'ten'");
+    }
+    
+    // Test overwriting keys
+    {
+        auto props = property_list<string, int>::of(
+            "one", 1, "two", 2, "one", 3
+        );
+        Assert(props.size() == 2, "Should have 2 items when key is repeated");
+        Assert(props.get("one") == 3, "Should have last value for repeated key");
+    }
+}
+
 // Main test runner
 int main() {
     try {
@@ -193,6 +271,7 @@ int main() {
         TestConstValuesIterators();
         TestKeysIteratorsWithReorg();
         TestKeyIteratorModification();
+        TestStaticOfMethods();
         
         std::cout << "All tests passed!" << std::endl;
         return 0;

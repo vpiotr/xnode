@@ -62,6 +62,27 @@ Support for dynamic typing in C++.
 	
 			return(out.str());  
 		}
+		
+		// Example using the traditional approach:
+		xobject font;
+		font.put("color", xnode::value_of(0xff0000));
+		font.put("font_name", xnode::value_of(std::string("arial")));
+		font.put("size", xnode::value_of(12));
+		printInFont(xnode::value_of(font), "Hello World!");
+		
+		// Example using the static 'of' method for cleaner code:
+		printInFont(
+			xnode::value_of(xobject::of(
+				"color", xnode::value_of(0xff0000),
+				"font_name", xnode::value_of(std::string("arial")),
+				"size", xnode::value_of(12),
+				"bold", xnode::value_of(true)
+			)), 
+			"Hello World!"
+		);
+		
+		// The static 'of' method allows for more concise and readable code
+		// by creating an xobject with properties in a single expression.
 
 * acquire ownership of & auto-delete objects
 
