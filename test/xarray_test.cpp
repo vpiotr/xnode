@@ -28,17 +28,15 @@
 using namespace std;
 
 void TestArraySum() {
-	// Reserve capacity upfront to avoid reallocations
-	xarray v;
-	v.reserve(5);
+	// Create array using the new of() static initializer
+	xarray v = xarray::of(
+		xnode::value_of(1),
+		xnode::value_of(8),
+		xnode::value_of(2),
+		xnode::value_of<long>(3),
+		xnode::value_of<long>(4)
+	);
 	
-	// Add elements to the array (using initializer list would be nicer if supported)
-	v.push_back(xnode::value_of(1));
-	v.push_back(xnode::value_of(8));
-	v.push_back(xnode::value_of(2));
-	v.push_back(xnode::value_of<long>(3));
-	v.push_back(xnode::value_of<long>(4));
-
 	// Sum as integers using std::accumulate with a lambda that extracts int values
 	int intSum = std::accumulate(v.begin(), v.end(), 0, 
 		[](int acc, const xnode& x) { return acc + x.get_as<int>(); });
@@ -51,12 +49,13 @@ void TestArraySum() {
 }
 
 void TestArraySort() {
-	xarray v;
-	v.push_back(xnode::value_of(1));
-	v.push_back(xnode::value_of(18));
-	v.push_back(xnode::value_of(128));
-	v.push_back(xnode::value_of(3));
-	v.push_back(xnode::value_of(23));
+	xarray v = xarray::of(
+		xnode::value_of(1),
+		xnode::value_of(18),
+		xnode::value_of(128),
+		xnode::value_of(3),
+		xnode::value_of(23)
+	);
 
 	std::sort(v.begin(), v.end());
 	Assert(std::is_sorted(v.begin(), v.end()));
@@ -243,10 +242,11 @@ void TestArrayCopy() {
 
 void TestArrayIteration() {
 	// Demonstrate various ways to iterate through an xarray
-	xarray v;
-	v.push_back(xnode::value_of(10));
-	v.push_back(xnode::value_of(20));
-	v.push_back(xnode::value_of(30));
+	xarray v = xarray::of(
+		xnode::value_of(10),
+		xnode::value_of(20),
+		xnode::value_of(30)
+	);
 	
 	// Method 1: Index-based for loop
 	int sum1 = 0;

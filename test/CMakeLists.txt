@@ -32,6 +32,20 @@ target_link_libraries(xarray_test PRIVATE xnode)
 # Add xarray test to CTest
 add_test(NAME xarray_test COMMAND xarray_test)
 
+# Add xarray of test
+add_executable(xarray_of_test xarray_of_test.cpp)
+target_link_libraries(xarray_of_test PRIVATE xnode)
+
+# Add xarray of test to CTest
+add_test(NAME xarray_of_test COMMAND xarray_of_test)
+
+# Add xarray of versions test
+add_executable(xarray_of_versions_test xarray_of_versions_test.cpp)
+target_link_libraries(xarray_of_versions_test PRIVATE xnode)
+
+# Add xarray of versions test to CTest
+add_test(NAME xarray_of_versions_test COMMAND xarray_of_versions_test)
+
 # Add xobject tests
 add_executable(xobject_test xobject_test.cpp)
 target_link_libraries(xobject_test PRIVATE xnode)
@@ -47,7 +61,7 @@ target_link_libraries(property_list_test PRIVATE xnode)
 add_test(NAME property_list_test COMMAND property_list_test)
 
 # Install the test executable if needed (optional)
-install(TARGETS xnode_test xnode_convert_test xnode_type_test xnode_overflow_test xarray_test xobject_test property_list_test
+install(TARGETS xnode_test xnode_convert_test xnode_type_test xnode_overflow_test xarray_test xarray_of_test xarray_of_versions_test xobject_test property_list_test
     RUNTIME DESTINATION bin
     OPTIONAL
 )

@@ -82,14 +82,11 @@ namespace XN_CHECK_EQUALS
 
 namespace XN_CHECK_LESS
 {
-	typedef char no[7];
-	template<typename T> no& operator < (const T&, const T&);
+	template <typename T, typename = void>
+	struct opLessExists : std::false_type {};
 
 	template <typename T>
-	struct opLessExists
-	{
-		enum { value = (sizeof(*(T*)(0) < *(T*)(0)) != sizeof(no)) };
-	};
+	struct opLessExists<T, decltype(void(std::declval<T>() < std::declval<T>()))> : std::true_type {};
 }
 
 template<typename T>

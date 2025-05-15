@@ -20,23 +20,26 @@ using namespace std;
 
 void TestTreeOfNodesWithArray() {
 	xnode root;
-	xarray arr1;
-	xnode value;
-
-	arr1.push_back(xnode::value_of(3));
-	arr1.push_back(xnode::value_of(5));
-
+	
+	// Create object
 	xobject obj;
 	obj.put("z", xnode::value_of(12));
 	obj.put("a", xnode::value_of(1L));
 
-	xarray arr2;
-	arr2.push_back(xnode::value_of(1));
-	arr2.push_back(xnode::value_of(1L));
-	arr2.push_back(xnode::value_of(false));
+	// Create nested array using of()
+	xarray arr2 = xarray::of(
+		xnode::value_of(1),
+		xnode::value_of(1L),
+		xnode::value_of(false)
+	);
 
-	arr1.push_back(xnode::value_of(obj));
-	arr1.push_back(xnode::value_of(arr2));
+	// Create main array using of()
+	xarray arr1 = xarray::of(
+		xnode::value_of(3),
+		xnode::value_of(5),
+		xnode::value_of(obj),
+		xnode::value_of(arr2)
+	);
 
 	root.set_as<xarray>(arr1);
 
