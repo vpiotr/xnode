@@ -589,7 +589,7 @@ void xnode_set_scalar(void **storage, T value)
 	xnode_setter<T, xnode_storage_meta<T>::storage_type>::assign_from_value(storage, &value);
 }
 
-std::string xnode_pack_value(const char *text)
+std::string xnode_pack_value_as_str(const char *text)
 {
 	return std::string(text);
 }
@@ -724,7 +724,7 @@ public:
 
 	/// set value and type of node
 	template <typename T>
-	void set_as(const T &value)
+	void set_as(const T &value, typename std::enable_if<!std::is_array<T>::value>::type * = 0)
 	{
 		if ((typeid(T) == type()) && (xnode_setter<T, xnode_storage_meta<T>::storage_type>::supports_copy()))
 		{
@@ -734,6 +734,13 @@ public:
 		{
 			rebuild_as(value);
 		}
+	}
+
+	/// set value and type of node for character arrays (string literals)
+	template <typename T>
+	void set_as(const T &value, typename std::enable_if<std::is_array<T>::value>::type * = 0)
+	{
+		set_as(xnode_pack_value_as_str(value));
 	}
 
 	/// set value without changing assigned type
@@ -991,7 +998,7 @@ public:
 	static this_type value_of(const ValueType &value, typename std::enable_if<std::is_array<ValueType>::value>::type * = 0)
 	{
 		this_type result;
-		result.set_as(xnode_pack_value(value));
+		result.set_as(xnode_pack_value_as_str(value));
 		return result;
 	}
 

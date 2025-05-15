@@ -178,6 +178,137 @@ void TestCharLiteral() {
 	Assert(value.get_as<std::string>() == "test", "get as string");
 }
 
+void TestStringLiteralSetAs() {
+    // Test setting string literals directly with set_as
+    xnode value;
+    
+    // Test with direct char array (C-style string literal)
+    value.set_as("Direct String Literal");
+    Assert(value.is<std::string>(), "Direct string literal should be stored as std::string");
+    Assert(value.get_as<std::string>() == "Direct String Literal", "Direct string literal should match expected value");
+    
+    // Test empty char array
+    value.set_as("");
+    Assert(value.is<std::string>(), "Empty direct string literal should be stored as std::string");
+    Assert(value.get_as<std::string>().empty(), "Empty direct string literal should result in empty string");
+    
+    // Test with special characters in char array
+    value.set_as("Special\tChars\nTest");
+    Assert(value.is<std::string>(), "Direct string literal with special chars should be stored as std::string");
+    Assert(value.get_as<std::string>() == "Special\tChars\nTest", "Special chars should be preserved");
+    
+    // Test with numeric char array
+    value.set_as("98765");
+    Assert(value.is<std::string>(), "Numeric char array should be stored as std::string");
+    Assert(value.get_as<int>() == 98765, "Numeric char array should convert to correct integer");
+}
+
+void TestStringLiteralValueOf() {
+    // Test creation with value_of for string literals
+    
+    // Basic string literal
+    xnode value1 = xnode::value_of("Test String");
+    Assert(value1.is<std::string>(), "String literal should be stored as std::string");
+    Assert(value1.get_as<std::string>() == "Test String", "String should match the literal");
+    
+    // Longer string literal with special characters
+    xnode value2 = xnode::value_of("Line 1\nLine 2\tTabbed");
+    Assert(value2.is<std::string>(), "String with escape chars should be stored as std::string");
+    Assert(value2.get_as<std::string>() == "Line 1\nLine 2\tTabbed", "String should preserve escape chars");
+    
+    // Unicode characters in string literal
+    xnode value3 = xnode::value_of("Unicode: \u00A9 \u2022 \u00AE");
+    Assert(value3.is<std::string>(), "Unicode string should be stored as std::string");
+}
+
+void TestStringLiteralConversions() {
+    // Test conversions between string literals and other types
+    
+    // String literal to numeric types
+    xnode value1 = xnode::value_of("42");
+    Assert(value1.is<std::string>(), "Numeric string should be stored as std::string");
+    Assert(value1.is_convertable_to<int>(), "Numeric string should be convertible to int");
+    Assert(value1.get_as<int>() == 42, "String should convert to correct integer");
+    Assert(value1.get_as<double>() == 42.0, "String should convert to correct double");
+    
+    // String literal with floating point
+    xnode value2 = xnode::value_of("3.14159");
+    Assert(value2.is<std::string>(), "Float string should be stored as std::string");
+    Assert(value2.is_convertable_to<double>(), "Float string should be convertible to double");
+    Assert(value2.is_convertable_to<float>(), "Float string should be convertible to float");
+    Assert(abs(value2.get_as<float>() - 3.14159f) < 0.0001f, "String should convert to correct float");
+    
+    // String literal to boolean
+    xnode value3 = xnode::value_of("true");
+    Assert(value3.is<std::string>(), "Boolean string should be stored as std::string");
+    Assert(value3.get_as<bool>(), "String 'true' should convert to boolean true");
+    
+    xnode value4 = xnode::value_of("1");
+    Assert(value4.is<std::string>(), "Numeric string should be stored as std::string");
+    Assert(value4.get_as<bool>(), "String '1' should convert to boolean true");
+    
+    // Non-convertible string literals
+    xnode value5 = xnode::value_of("not a number");
+    Assert(value5.is<std::string>(), "Text string should be stored as std::string");
+    AssertFalse(value5.is_convertable_to<int>(), "Text string should not be convertible to int");
+    
+    // Test exception throwing with a lambda
+    try {
+        value5.get_as<int>();
+        Assert(false, "Should have thrown exception for non-convertible string");
+    } catch (...) {
+        // Expected exception
+    }
+}
+
+void TestStringLiteralComparisons() {
+    // Test comparison operations with string literals
+    
+    // Equality comparisons
+    xnode value1 = xnode::value_of("test");
+    xnode value2 = xnode::value_of("test");
+    xnode value3 = xnode::value_of("different");
+    
+    Assert(value1 == value2, "Identical string literals should be equal");
+    Assert(value1 != value3, "Different string literals should not be equal");
+    
+    // Direct comparison with string literals
+    Assert(value1.get_as<std::string>() == "test", "String should equal literal");
+    AssertFalse(value1.get_as<std::string>() == "different", "String should not equal different literal");
+    
+    // Case sensitivity
+    xnode value4 = xnode::value_of("TEST");
+    AssertFalse(value1 == value4, "String comparison should be case sensitive");
+    
+    // Length comparison
+    xnode value5 = xnode::value_of("test_longer");
+    Assert(value1 != value5, "Different length strings should not be equal");
+}
+
+void TestStringLiteralWithRawPointers() {
+    // Test interaction between string literals and char pointers
+    
+    // Create from literal vs pointer
+    const char* cstr = "test string";
+    xnode value1 = xnode::value_of(std::string("test string"));
+    xnode value2 = xnode::value_of(std::string(cstr));
+    
+    Assert(value1.get_as<std::string>() == value2.get_as<std::string>(), 
+           "String from literal should equal string from pointer");
+    Assert(value1.is<std::string>(), "String from literal should be std::string");
+    Assert(value2.is<std::string>(), "String from pointer should be std::string");
+    
+    // Raw char array
+    char array[] = "hello world";
+    xnode value3 = xnode::value_of(std::string(array));
+    Assert(value3.is<std::string>(), "String from array should be std::string");
+    Assert(value3.get_as<std::string>() == "hello world", "String should equal original array");
+    
+    // Modifying the original should not affect xnode value
+    array[0] = 'H';
+    Assert(value3.get_as<std::string>() == "hello world", "Modifying source array should not affect xnode");
+}
+
 void TestAnyScalar() {
 	// assuming there is no matching caster & xnode_type_code for this type
 	typedef signed char schar;
@@ -535,6 +666,11 @@ int xnode_test() {
 	TEST_FUNC(ConvStringToInt);
 	TEST_FUNC(CharPtr);
     TEST_FUNC(CharLiteral);
+    TEST_FUNC(StringLiteralSetAs);
+    TEST_FUNC(StringLiteralValueOf);
+    TEST_FUNC(StringLiteralConversions);
+    TEST_FUNC(StringLiteralComparisons);
+    TEST_FUNC(StringLiteralWithRawPointers);
 	TEST_FUNC(AnyScalar);
 	TEST_FUNC(AnyStruct);
 	TEST_FUNC(Release);
